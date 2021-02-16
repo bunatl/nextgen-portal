@@ -1,10 +1,12 @@
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './App';
+
+import { Home } from './components/Home';
+import 'antd/dist/antd.css';
 
 ReactDOM.render(
   <StrictMode>
-    <App />
+    <Home />
   </StrictMode>,
   document.getElementById('root')
 );
