@@ -1,64 +1,56 @@
-import { Form, Input, Button, Checkbox } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useState, createContext, useMemo } from 'react'
+
+import { Menu } from 'antd';
+
+// types
+import { activeTabType } from '../types/tabs'
+// components
+import { Header } from './Header';
+import { Login } from './Login';
+import { Register } from './Register';
+import { Footer } from './Footer';
+
 
 /* TODO:
-  edit home
   add lazy load to routes
-  add routes to index
-  draw temaple for website
-  /wrong name
-  /dashboard
-  /login
+  add SASS
+  router??
+  auth?
+  connect to backend
 */
 
-export const Home = () => {
-  return (
-    <Form
-      name="normal_login"
-      className="login-form"
-      initialValues={{
-        remember: true,
-      }}
-    // onFinish={onFinish}
-    >
-      <Form.Item
-        name="username"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Username!',
-          },
-        ]}
-      >
-        <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
-      </Form.Item>
-      <Form.Item
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: 'Please input your Password!',
-          },
-        ]}
-      >
-        <Input
-          prefix={<LockOutlined className="site-form-item-icon" />}
-          type="password"
-          placeholder="Password"
-        />
-      </Form.Item>
-      {/* <Form.Item> */}
-      <Form.Item name="remember" valuePropName="checked" noStyle>
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item>
-      {/* </Form.Item> */}
 
-      <Form.Item>
-        <Button type="primary" htmlType="submit" className="login-form-button">
-          Log in
-        </Button>
-        Or <a href="">register now!</a>
-      </Form.Item>
-    </Form>
+export const ModalContext = createContext<any>({});
+
+export const Home = () => {
+  const [ activeTab, setActiveTab ] = useState<activeTabType>('login');
+  const [ visibility, setVisibility ] = useState(false);
+  const providerValue = useMemo(() => ({ visibility, setVisibility }), [ visibility, setVisibility ])
+
+
+  return (
+    <div id="home">
+      <Header />
+
+      <ModalContext.Provider value={providerValue}>
+        <div id="loginForm">
+          <Menu mode="horizontal" selectedKeys={[ activeTab ]}>
+            <Menu.Item
+              key="login"
+              onClick={() => setActiveTab('login')}
+            >Log in
+        </Menu.Item>
+            <Menu.Item
+              key="register"
+              onClick={() => setActiveTab('register')}
+            >Register
+          </Menu.Item>
+          </Menu>
+          {activeTab === 'login' ? <Login /> : <Register />}
+        </div>
+      </ModalContext.Provider>
+
+      <Footer />
+    </div>
   );
 };
