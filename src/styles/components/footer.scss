@@ -1,0 +1,12 @@
+footer{
+    padding: 1em 0 .25em 0;
+    border-top: 1px solid dodgerblue;
+    background: lightskyblue;
+    text-align: center;
+
+    > a,
+    > a:hover {
+        font-weight: bold;
+        color: black;
+    }
+}

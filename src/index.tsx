@@ -3,9 +3,8 @@ import ReactDOM from 'react-dom';
 
 import { Home } from './components/Home';
 
-
 import 'antd/dist/antd.css';
-import './styles/Home.css';
+import './styles/main.scss';
 
 ReactDOM.render(
   <StrictMode>
