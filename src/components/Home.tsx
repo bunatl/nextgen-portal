@@ -1,6 +1,7 @@
 // components
 import { Header } from './home/Header';
 import { Form } from './home/Form'
+import { Dashboard } from './Dashboard'
 import { Footer } from './home/Footer';
 
 /* TODO:
@@ -16,6 +17,7 @@ export const Home = () => {
     <div id="home">
       <Header />
       <Form />
+      {/* <Dashboard /> */}
       <Footer />
     </div>
   );

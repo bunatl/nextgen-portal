@@ -1,6 +1,7 @@
-
 export const Dashboard = () => {
     return (
-        <div></div>
-    );
-};
+        <main>
+            {/* collection of tile */}
+        </main>
+    )
+}
