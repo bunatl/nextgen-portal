@@ -11,7 +11,6 @@ import { ModalContext } from './Form';
 import policy from '../../utils/policy';
 
 export const Register = () => {
-    // username, pass, email
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
 

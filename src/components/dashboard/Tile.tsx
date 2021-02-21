@@ -1,19 +1,26 @@
 import { FC } from 'react';
+import { Card } from 'antd';
+import { ITile } from '../../types/tile';
 
-interface ITile {
+const { Meta } = Card;
 
-}
-
-export const Tile: FC<ITile> = () => {
+export const Tile: FC<ITile> = ({ tileTitle, tileHero, tileDescription, tileActionList }) => {
     return (
-        <div className='dashboardTile'>
-            <div className='tileImg'>
-                <img></img>
-            </div>
-            <div className='tileBody'>
-                <h2></h2>
-                <p></p>
-            </div>
-        </div>
+        <Card
+            className="tileCard"
+            style={{ width: 300 }}
+            cover={
+                <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                />
+            }
+            actions={tileActionList}
+        >
+            <Meta
+                title={tileTitle}
+                description={tileDescription}
+            />
+        </Card>
     )
 }

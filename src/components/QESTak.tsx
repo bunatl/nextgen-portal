@@ -11,7 +11,7 @@ import {
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-export const Dashboard = () => {
+export const Qest = () => {
 
 
     return (
