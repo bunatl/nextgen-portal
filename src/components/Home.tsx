@@ -1,3 +1,8 @@
+import {
+  BrowserRouter as Router,
+  Route,
+} from "react-router-dom"
+
 // components
 import { Header } from './home/Header';
 import { Form } from './home/Form';
@@ -8,19 +13,20 @@ import { Footer } from './home/Footer';
 /* TODO:
   add lazy load to routes
   add SASS
-  router??
   auth?
   connect to backend
 */
 
 export const Home = () => {
   return (
-    <div id="home">
-      <Header />
-      {/* <Form /> */}
-      <Dashboard />
-      {/* <Qest /> */}
-      <Footer />
-    </div>
+    <Router>
+      <div id="home">
+        <Route path="/(|dashboard)/" component={Header}></Route>
+        <Route exact path="/" component={Form}></Route>
+        <Route path="/dashboard" component={Dashboard}></Route>
+        <Route path="/qest" component={Qest}></Route>
+        <Route path="/(|dashboard)/" component={Footer}></Route>
+      </div>
+    </Router>
   );
 };

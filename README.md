@@ -18,6 +18,7 @@
 * [Ant Design](https://ant.design/) - UI framework
 * [AWS lambda](https://aws.amazon.com/lambda/) - Serveless compute service as opposed to [Node.js](https://nodejs.org) (server side JavaScript) with [Express.js](https://expressjs.com/)
 * [axios](https://github.com/axios/axios) - Promise based HTTP client
+* [react-router-dom](https://reactrouter.com/web/guides/quick-start) - Declarative routing for React.js
 <!-- * [GraphQL](https://graphql.org/) - query language for API -->
 <!-- * [Appolo Server](https://www.apollographql.com/docs/apollo-server/) - GraphQL server -->
 <!-- * [GraphQL Code Generator](https://graphql-code-generator.com/) - typescript code generator from GraphQL schema -->
