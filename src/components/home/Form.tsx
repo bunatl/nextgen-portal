@@ -1,19 +1,28 @@
-import { useState, createContext, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Menu } from 'antd';
-
-// components
-import { Login } from './Login';
-import { Register } from './Register';
 
 // types
 import { activeTabType } from '../../types/tabs';
-
-export const ModalContext = createContext<any>({});
+// context
+import { ModalContext } from '../../contexts'
+// components
+import { Login } from './Login';
+import { Register } from './Register';
+import { useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 export const Form = () => {
     const [ activeTab, setActiveTab ] = useState<activeTabType>('login');
-    const [ visibility, setVisibility ] = useState(false);
-    const providerValue = useMemo(() => ({ visibility, setVisibility }), [ visibility, setVisibility ])
+    const [ visibility, setVisibility ] = useState<boolean>(false);
+    const providerValue = useMemo(() => ({ visibility, setVisibility }), [ visibility, setVisibility ]);
+
+    const history = useHistory();
+    // usehistory() must be used in sub component -> https://stackoverflow.com/a/58221867/11231064
+    useEffect(() => {
+        // do not load form and redirect straight to dashboard if user is still logged & wanted to be remembered
+        if (localStorage.getItem("user") && localStorage.getItem("remember") === "true")
+            history.push('/dashboard');
+    }, [ history ])
 
     return (
         <ModalContext.Provider value={providerValue}>

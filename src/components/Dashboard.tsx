@@ -1,7 +1,7 @@
-import { Tile } from './dashboard/Tile';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 
 import { ITile } from '../types/tile';
+import { Tile } from './dashboard/Tile';
 
 const listOfApps: ITile[] = [
     { tileTitle: "QESTak", tileHero: "", tileActionList: [ <SettingOutlined key="setting" />, <EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" /> ], tileDescription: "Helps you improve" },
@@ -17,6 +17,7 @@ export const Dashboard = () => {
             {
                 listOfApps.map((x, i) => (
                     <Tile
+                        key={i}
                         tileTitle={x.tileTitle}
                         tileDescription={x.tileDescription}
                         tileActionList={x.tileActionList}

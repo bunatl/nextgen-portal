@@ -7,24 +7,41 @@ import {
     Button,
 } from 'antd';
 
-import { ModalContext } from './Form';
+import { ModalContext } from '../../contexts';
 import policy from '../../utils/policy';
 
 export const Register = () => {
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
 
+    const onFinish = (values: any) => {
+        console.log(values);
+        // api -> register user
+        // - check if exist return 
+        // --> true -> dashboard
+        // -> false > msg user already exists + clear form
+    }
+
     return (
         <Form
             form={form}
             name="register"
-            // onFinish={onFinish}
-            initialValues={{
-                residence: [ 'zhejiang', 'hangzhou', 'xihu' ],
-                prefix: '86',
-            }}
+            onFinish={onFinish}
             scrollToFirstError
         >
+            <Form.Item
+                name="username"
+                label={"username"}
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input your username!',
+                        whitespace: true,
+                    },
+                ]}
+            >
+                <Input autoComplete="username" />
+            </Form.Item>
             <Form.Item
                 name="email"
                 label="E-mail"
@@ -53,7 +70,7 @@ export const Register = () => {
                 ]}
                 hasFeedback
             >
-                <Input.Password />
+                <Input.Password autoComplete="new-password" />
             </Form.Item>
 
             <Form.Item
@@ -77,36 +94,23 @@ export const Register = () => {
                     }),
                 ]}
             >
-                <Input.Password />
+                <Input.Password autoComplete="new-password" />
             </Form.Item>
-
-            <Form.Item
-                name="username"
-                label={"username"}
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your username!',
-                        whitespace: true,
-                    },
-                ]}
-            >
-                <Input />
-            </Form.Item>
-
-            <Form.Item
-                name="agreement"
-                valuePropName="checked"
-                rules={[
-                    {
-                        validator: (_, value) =>
-                            value ? Promise.resolve() : Promise.reject('Should accept agreement'),
-                    },
-                ]}
-            >
-                <Checkbox>
-                    I have read the <span onClick={() => setVisibility(true)}>agreement</span>
-                </Checkbox>
+            <Form.Item>
+                <Form.Item
+                    name="agreement"
+                    valuePropName="checked"
+                    rules={[
+                        {
+                            validator: (_, value) =>
+                                value ? Promise.resolve() : Promise.reject('Should accept agreement'),
+                        },
+                    ]}
+                >
+                    <Checkbox>
+                        I have read the <span onClick={() => setVisibility(true)}>agreement</span>
+                    </Checkbox>
+                </Form.Item>
                 <ModalBox />
                 <Button type="primary" htmlType="submit">
                     Register

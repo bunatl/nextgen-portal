@@ -1,23 +1,25 @@
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { useHistory } from "react-router-dom";
 
 const axios = require('axios');
 
-
 export const Login = () => {
+    const history = useHistory();
+
     const onFinish = async (values: any) => {
-        console.log('Success:', values);
-        // send to server
         try {
+            // send to server
             const response = await axios.get(`${process.env.REACT_APP_AWS_URL}/test`);
-            console.log(response);
+            // set user is logged
+            localStorage.setItem("user", values.username);
+            // set if the should be remembered
+            localStorage.setItem("remember", values.remember);
+            // redirect to dashboard -> https://stackoverflow.com/questions/60691861/redirect-react-form-component-on-submit-react-router-v5-1
+            history.push("/dashboard");
         } catch (error) {
             console.error(error);
         }
-    };
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
     };
 
     return (
@@ -28,7 +30,6 @@ export const Login = () => {
                 remember: true,
             }}
             onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
         >
             <Form.Item
                 name="username"
@@ -39,7 +40,11 @@ export const Login = () => {
                     },
                 ]}
             >
-                <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Username" />
+                <Input
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    autoComplete="username"
+                    placeholder="Username"
+                />
             </Form.Item>
             <Form.Item
                 name="password"
@@ -53,12 +58,14 @@ export const Login = () => {
                 <Input
                     prefix={<LockOutlined className="site-form-item-icon" />}
                     type="password"
+                    autoComplete="current-password"
                     placeholder="Password"
                 />
             </Form.Item>
-            {/* <Form.Item> */}
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-                <Checkbox>Remember me</Checkbox>
+            <Form.Item >
+                <Form.Item name="remember" valuePropName="checked" noStyle>
+                    <Checkbox>Remember me</Checkbox>
+                </Form.Item>
 
                 <Button type="primary" htmlType="submit" className="login-form-button">
                     Log in
