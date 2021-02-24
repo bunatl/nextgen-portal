@@ -10,7 +10,9 @@ export const Login = () => {
     const onFinish = async (values: any) => {
         try {
             // send to server
-            const response = await axios.get(`${process.env.REACT_APP_AWS_URL}/test`);
+            const response = await axios.post(`${process.env.REACT_APP_AWS_URL}/test`, { user: "aa", passw: "xx" });
+            // const response = await axios.get(`${process.env.REACT_APP_AWS_URL}/test`);
+            console.log(response)
             // set user is logged
             localStorage.setItem("user", values.username);
             // set if the should be remembered
