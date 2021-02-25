@@ -1,41 +1,35 @@
-import {
+const {
     searchUser,
     addUser
-} from './dbOperations';
+} = require('./dbOperations');
 
-exports.handler = async (event, context, callback) => {
-    // Captures the requestId from the context message
-    // const requestId = context.awsRequestId;
-    console.log(event);
-    console.log(context);
-    console.log(callback);
+exports.handler = async (event) => {
+    // if (!event.username || !event.psswd || !event.email)
+    //     return response(404, "Incorrect parameters.");
+
+    // body params
+    const username = event.username;
+    const psswd = event.psswd;
+    const email = event.email;
+
+    console.log("params", username, psswd, email);
 
     try {
-        // search
-        // true leave fail add new one
-        const data = await searchUser('name');
-        console.log(data);
-        // Handle promise fulfilled/rejected states
-        // callback(null, {
-        //     statusCode: 201,
-        //     body: '',
-        //     headers: {
-        //         'Access-Control-Allow-Origin' : '*'
-        //     }
-        // });
+        // check if users exists
+        const resSearch = await searchUser(username);
+        console.log(resSearch);
+        // insert user
+        const resAdd = await addUser(username, psswd, email);
+        console.log(resAdd);
+        return response(200, "OK");
     } catch (err) {
-        console.error(err);
+        return response(404, err);
     }
-
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify('Hello from Lambda!'),
-        event
-    };
-    return response;
 };
 
-// function(err, data) {
-//       if (err) console.log(err);
-//       else console.log(data);
-//     });
+const response = (code, data) => {
+    return {
+        statusCode: code,
+        body: data
+    };
+};
