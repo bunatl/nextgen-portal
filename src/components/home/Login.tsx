@@ -12,7 +12,7 @@ export const Login = () => {
             const data = {
                 "username": values.username,
                 "psswd": values.password,
-                "email": values.email
+                "email": "test@test.com"
             }
             // send to server
             const response = await axios.post(`${process.env.REACT_APP_AWS_URL}/beta`, data);
