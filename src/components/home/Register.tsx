@@ -5,21 +5,30 @@ import {
     Checkbox,
     Modal,
     Button,
+    message
 } from 'antd';
 
 import { ModalContext } from '../../contexts';
 import policy from '../../utils/policy';
 
+const axios = require('axios');
+
 export const Register = () => {
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
 
-    const onFinish = (values: any) => {
-        console.log(values);
-        // api -> register user
-        // - check if exist return 
-        // --> true -> dashboard
-        // -> false > msg user already exists + clear form
+    const onFinish = async (values: any) => {
+        const data = {
+            "username": values.username,
+            "psswd": values.password,
+            "email": values.email
+        }
+        const response = await axios.post(`${process.env.REACT_APP_AWS_URL}/register`, data);
+        response.data.registered
+            ? message.success(response.data.body, 5)
+            : message.warning(response.data.body, 10)
+
+        form.resetFields();
     }
 
     return (
