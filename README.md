@@ -34,7 +34,7 @@ Portalo is an online web application that centralized your company's internal we
 ## Installation
  * To start frontend: `yarn start`
  * Install modules: `yarn install`
- * For devs: `yarn run dev`
+ * Create a Build: `yarn run build`
 
 ## Licence
 GNU GENERAL PUBLIC LICENSE
