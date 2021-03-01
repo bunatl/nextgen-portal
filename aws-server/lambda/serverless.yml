@@ -1,0 +1,65 @@
+service: portalo
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-west-1
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    shouldStartNameWithService: true
+
+functions:
+  login:
+    handler: login.login
+    memorySize: 128
+    description: Function that log user.
+    events:
+      - http: 
+          path: /login
+          method: post
+          cors: true # preflight requests
+  register:
+    handler: register.register
+    memorySize: 128
+    description: Function that register user.
+    events:
+      - http: 
+          path: /register
+          method: post
+          cors: true
+
+resources:
+  Resources:
+    MyDynamoDBEmployeesTable:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: Employees
+        AttributeDefinitions: 
+          - AttributeName: username
+            AttributeType: S
+        KeySchema: 
+          - AttributeName: username
+            KeyType: HASH
+        TimeToLiveSpecification: 
+          AttributeName: ExpirationTime
+          Enabled: true
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    MyIamPolicy:
+      Type: AWS::IAM::Role
+      Properties:
+        PolicyName: dbRole
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Action:
+                - dynamodb:DescribeTable
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+              Resource:
+                - MyDynamoDBEmployeesTable #arn:aws:dynamodb:us-east-1:336526891729:table/employees

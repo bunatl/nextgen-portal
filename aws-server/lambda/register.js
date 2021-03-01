@@ -3,7 +3,23 @@ const {
     addUser
 } = require('./dbOperations');
 
-exports.handler = async (event) => {
+// const { response } = require('./login');
+
+const response = (code, data, success) => {
+    return {
+        statusCode: code,
+        body: JSON.stringify(data),
+        headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+            "Access-Control-Allow-Methods": "ANY"
+        },
+        success
+    };
+};
+
+
+module.exports.register = async (event) => {
     if (!event.username || !event.psswd || !event.email)
         return response(200, "Incorrect parameters.", false);
 
@@ -29,10 +45,10 @@ exports.handler = async (event) => {
     }
 };
 
-const response = (code, data, registered) => {
-    return {
-        statusCode: code,
-        body: JSON.stringify(data),
-        registered
-    };
-};
+// const response = (code, data, registered) => {
+//     return {
+//         statusCode: code,
+//         body: JSON.stringify(data),
+//         registered
+//     };
+// };

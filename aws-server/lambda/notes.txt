@@ -1,8 +1,0 @@
-IAM
-API
-lambda
-dynamo DB
-
-make lambda functions + path + cors + IAM
-
-+ responses to FE
