@@ -74,13 +74,13 @@
     "LoginLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/portalo-dev-login"
+        "LogGroupName": "/aws/lambda/portalo2-dev-login"
       }
     },
     "RegisterLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
-        "LogGroupName": "/aws/lambda/portalo-dev-register"
+        "LogGroupName": "/aws/lambda/portalo2-dev-register"
       }
     },
     "IamRoleLambdaExecution": {
@@ -108,7 +108,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "portalo",
+                  "portalo2",
                   "dev",
                   "lambda"
                 ]
@@ -125,7 +125,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo-dev*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo2-dev*:*"
                     }
                   ]
                 },
@@ -136,7 +136,7 @@
                   ],
                   "Resource": [
                     {
-                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo-dev*:*:*"
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo2-dev*:*:*"
                     }
                   ]
                 }
@@ -149,7 +149,7 @@
           "Fn::Join": [
             "-",
             [
-              "portalo",
+              "portalo2",
               "dev",
               {
                 "Ref": "AWS::Region"
@@ -167,22 +167,23 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/portalo/dev/1614639217134-2021-03-01T22:53:37.134Z/portalo.zip"
+          "S3Key": "serverless/portalo2/dev/1614694536020-2021-03-02T14:15:36.020Z/login.zip"
         },
         "Handler": "login.login",
         "Runtime": "nodejs14.x",
-        "FunctionName": "portalo-dev-login",
+        "FunctionName": "portalo2-dev-login",
         "MemorySize": 128,
         "Timeout": 6,
         "Description": "Function that log user.",
         "Role": {
           "Fn::GetAtt": [
-            "IamRoleLambdaExecution",
+            "LoginIamRoleLambdaExecution",
             "Arn"
           ]
         }
       },
       "DependsOn": [
+        "LoginIamRoleLambdaExecution",
         "LoginLogGroup"
       ]
     },
@@ -193,11 +194,11 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/portalo/dev/1614639217134-2021-03-01T22:53:37.134Z/portalo.zip"
+          "S3Key": "serverless/portalo2/dev/1614694536020-2021-03-02T14:15:36.020Z/register.zip"
         },
         "Handler": "register.register",
         "Runtime": "nodejs14.x",
-        "FunctionName": "portalo-dev-register",
+        "FunctionName": "portalo2-dev-register",
         "MemorySize": 128,
         "Timeout": 6,
         "Description": "Function that register user.",
@@ -212,32 +213,32 @@
         "RegisterLogGroup"
       ]
     },
-    "LoginLambdaVersioncNohHJq07ouV0QfEzaPJtlUHw64o5JqK33JwAlaiM4": {
+    "LoginLambdaVersionVlEaXdWH7Hed3NBQEIz3NDh9GD8MyXh2SfPh30ebiwo": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "LoginLambdaFunction"
         },
-        "CodeSha256": "wKN+XOkonf113XjKBt+QVFu7I5CB2SUOgd4+nIJa4BE=",
+        "CodeSha256": "axur5ZbHK4vYFcfCEjAZW/Y1YlyONt3KOQrgSyxhkRM=",
         "Description": "Function that log user."
       }
     },
-    "RegisterLambdaVersionBou9JxXioAjReJM3z2Suus5zPTWLQz08uvah11MPHiI": {
+    "RegisterLambdaVersionIPX74KqXe8nxKSBSIY0qamyiI9nMw5Q6fN6F97EZTY": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "RegisterLambdaFunction"
         },
-        "CodeSha256": "wKN+XOkonf113XjKBt+QVFu7I5CB2SUOgd4+nIJa4BE=",
+        "CodeSha256": "axur5ZbHK4vYFcfCEjAZW/Y1YlyONt3KOQrgSyxhkRM=",
         "Description": "Function that register user."
       }
     },
     "ApiGatewayRestApi": {
       "Type": "AWS::ApiGateway::RestApi",
       "Properties": {
-        "Name": "portalo-dev",
+        "Name": "portalo2-dev",
         "EndpointConfiguration": {
           "Types": [
             "EDGE"
@@ -276,100 +277,10 @@
         }
       }
     },
-    "ApiGatewayMethodLoginOptions": {
+    "ApiGatewayMethodLoginGet": {
       "Type": "AWS::ApiGateway::Method",
       "Properties": {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "MethodResponses": [
-          {
-            "StatusCode": "200",
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true
-            },
-            "ResponseModels": {}
-          }
-        ],
-        "RequestParameters": {},
-        "Integration": {
-          "Type": "MOCK",
-          "RequestTemplates": {
-            "application/json": "{statusCode:200}"
-          },
-          "ContentHandling": "CONVERT_TO_TEXT",
-          "IntegrationResponses": [
-            {
-              "StatusCode": "200",
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
-              },
-              "ResponseTemplates": {
-                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
-              }
-            }
-          ]
-        },
-        "ResourceId": {
-          "Ref": "ApiGatewayResourceLogin"
-        },
-        "RestApiId": {
-          "Ref": "ApiGatewayRestApi"
-        }
-      }
-    },
-    "ApiGatewayMethodRegisterOptions": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "AuthorizationType": "NONE",
-        "HttpMethod": "OPTIONS",
-        "MethodResponses": [
-          {
-            "StatusCode": "200",
-            "ResponseParameters": {
-              "method.response.header.Access-Control-Allow-Origin": true,
-              "method.response.header.Access-Control-Allow-Headers": true,
-              "method.response.header.Access-Control-Allow-Methods": true
-            },
-            "ResponseModels": {}
-          }
-        ],
-        "RequestParameters": {},
-        "Integration": {
-          "Type": "MOCK",
-          "RequestTemplates": {
-            "application/json": "{statusCode:200}"
-          },
-          "ContentHandling": "CONVERT_TO_TEXT",
-          "IntegrationResponses": [
-            {
-              "StatusCode": "200",
-              "ResponseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'",
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent'",
-                "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,POST'"
-              },
-              "ResponseTemplates": {
-                "application/json": "#set($origin = $input.params(\"Origin\"))\n#if($origin == \"\") #set($origin = $input.params(\"origin\")) #end\n#if($origin.matches(\".+\")) #set($context.responseOverride.header.Access-Control-Allow-Origin = $origin) #end"
-              }
-            }
-          ]
-        },
-        "ResourceId": {
-          "Ref": "ApiGatewayResourceRegister"
-        },
-        "RestApiId": {
-          "Ref": "ApiGatewayRestApi"
-        }
-      }
-    },
-    "ApiGatewayMethodLoginPost": {
-      "Type": "AWS::ApiGateway::Method",
-      "Properties": {
-        "HttpMethod": "POST",
+        "HttpMethod": "GET",
         "RequestParameters": {},
         "ResourceId": {
           "Ref": "ApiGatewayResourceLogin"
@@ -452,7 +363,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1614639214743": {
+    "ApiGatewayDeployment1614694529665": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -461,9 +372,7 @@
         "StageName": "dev"
       },
       "DependsOn": [
-        "ApiGatewayMethodLoginOptions",
-        "ApiGatewayMethodRegisterOptions",
-        "ApiGatewayMethodLoginPost",
+        "ApiGatewayMethodLoginGet",
         "ApiGatewayMethodRegisterPost"
       ]
     },
@@ -541,55 +450,73 @@
         }
       }
     },
-    "MyDynamoDBEmployeesTable": {
-      "Type": "AWS::DynamoDB::Table",
-      "Properties": {
-        "TableName": "Employees",
-        "AttributeDefinitions": [
-          {
-            "AttributeName": "username",
-            "AttributeType": "S"
-          }
-        ],
-        "KeySchema": [
-          {
-            "AttributeName": "username",
-            "KeyType": "HASH"
-          }
-        ],
-        "TimeToLiveSpecification": {
-          "AttributeName": "ExpirationTime",
-          "Enabled": true
-        },
-        "ProvisionedThroughput": {
-          "ReadCapacityUnits": 1,
-          "WriteCapacityUnits": 1
-        }
-      }
-    },
-    "MyIamPolicy": {
+    "LoginIamRoleLambdaExecution": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "PolicyName": "dbRole",
-        "PolicyDocument": {
+        "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
             {
               "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              },
               "Action": [
-                "dynamodb:DescribeTable",
-                "dynamodb:Scan",
-                "dynamodb:GetItem",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
-              ],
-              "Resource": [
-                "MyDynamoDBEmployeesTable"
+                "sts:AssumeRole"
               ]
             }
           ]
-        }
+        },
+        "Policies": [
+          {
+            "PolicyName": {
+              "Fn::Join": [
+                "-",
+                [
+                  "portalo2",
+                  "dev",
+                  "lambda"
+                ]
+              ]
+            },
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:CreateLogGroup",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo2-dev-login:*:*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:PutItem",
+                    "dynamodb:DescribeTable",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:UpdateTable"
+                  ],
+                  "Resource": "arn:aws:dynamodb:eu-central-1:336526891729:table/Employees"
+                }
+              ]
+            }
+          }
+        ],
+        "Path": "/",
+        "RoleName": "employeesDynamoDescribeScanPutGetUpdateDelete",
+        "ManagedPolicyArns": []
       }
     }
   },
@@ -602,13 +529,13 @@
     "LoginLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "LoginLambdaVersioncNohHJq07ouV0QfEzaPJtlUHw64o5JqK33JwAlaiM4"
+        "Ref": "LoginLambdaVersionVlEaXdWH7Hed3NBQEIz3NDh9GD8MyXh2SfPh30ebiwo"
       }
     },
     "RegisterLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "RegisterLambdaVersionBou9JxXioAjReJM3z2Suus5zPTWLQz08uvah11MPHiI"
+        "Ref": "RegisterLambdaVersionIPX74KqXe8nxKSBSIY0qamyiI9nMw5Q6fN6F97EZTY"
       }
     },
     "ServiceEndpoint": {
