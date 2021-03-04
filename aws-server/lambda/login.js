@@ -1,54 +1,24 @@
-// const { searchUser } = require('./dbOperations');
-// Loads in the AWS SDK
-const AWS = require('aws-sdk');
-// Creates the document client specifing the region (N.Carolina = us-east-1)
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const { searchUser } = require('./helpers/dbOperations');
+const { response } = require('./helpers/response');
 
-// Writes message to DynamoDb table employees 
-const searchUser = username => {
-    const params = {
-        TableName: 'Employees',
-        Key: {
-            'username': username
-        }
-    };
-    return ddb.get(params).promise();
-};
-
-
-const response = (code, data, success) => {
-    return {
-        'statusCode': code,
-        'body': JSON.stringify(data),
-        'headers': {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-            "Access-Control-Allow-Methods": "ANY"
-        },
-        'success': success
-    };
-};
-
-module.exports.login = async (event) => {
-    // if (!event.username || !event.psswd)
-    //     return response(200, "Incorrect parameters.", false);
-
+module.exports.login = async (event, context, callback) => {
     // body params
-    // const username = event.username;
-    // const psswd = event.psswd;
-    const username = 'aa';
-    const psswd = 'x';
+    const { username, psswd } = JSON.parse(event.body);
+
+    if (!username || !psswd ||
+        username.trim() === '' || psswd.trim() === '')
+        callback(null, response(200, "Incorrect parameters.", false));
 
     try {
-        // check if users exists
+        // check if users existsdd
         const resSearch = await searchUser(username);
         if (resSearch.Item === undefined)
-            return response(200, `User with username ${ username } doesn't exists.`, false);
+            callback(null, response(200, `User with username ${ username } doesn't exists.`, false));
 
-        return (username === resSearch.Item.username && psswd === resSearch.Item.password)
+        callback(null, (username === resSearch.Item.username && psswd === resSearch.Item.password)
             ? response(200, `Successfull login.`, true)
-            : response(200, `Username or password does not match.`, false);
+            : response(200, `Username or password does not match.`, false));
     } catch (err) {
-        return response(err.statusCode, err, false);
+        callback(null, response(err.statusCode, err, false));
     }
 };

@@ -1,8 +1,5 @@
 service: portalo2
 
-plugins:
-  - serverless-iam-roles-per-function
-
 # deplyes each function individually
 package:
   individually: true
@@ -14,38 +11,39 @@ provider:
   lambdaHashingVersion: 20201221
   apiGateway:
     shouldStartNameWithService: true
+  iam:
+    role:
+      statements: # permissions for all of your functions can be set here
+        - Effect: Allow
+          Action: # Gives permission to DynamoDB tables in a specific region
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: arn:aws:dynamodb:eu-central-1:336526891729:table/Employees
 
 functions:
   login:
     handler: login.login
+    name: my-login-function
     memorySize: 128
     description: Function that log user.
     events:
-    - http: 
+    - httpApi: 
         path: /login
-        method: get
-        # cors: true # preflight requests
-    iamRoleStatementsName: employeesDynamoDescribeScanPutGetUpdateDelete 
-    iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:PutItem
-        - dynamodb:DescribeTable
-        - dynamodb:DeleteItem
-        - dynamodb:GetItem
-        - dynamodb:Query
-        - dynamodb:UpdateItem
-        - dynamodb:UpdateTable
-      Resource: arn:aws:dynamodb:eu-central-1:336526891729:table/Employees
+        method: post
   register:
     handler: register.register
+    name: post-function
     memorySize: 128
     description: Function that register user.
     events:
-    - http: 
+    - httpApi: 
         path: /register
         method: post
-        # cors: true
 
 # resources:
 #   Resources:

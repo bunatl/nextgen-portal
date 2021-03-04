@@ -12,6 +12,25 @@
       "apiGateway": {
         "shouldStartNameWithService": true
       },
+      "iam": {
+        "role": {
+          "statements": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:DescribeTable",
+                "dynamodb:Query",
+                "dynamodb:Scan",
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
+              ],
+              "Resource": "arn:aws:dynamodb:eu-central-1:336526891729:table/Employees"
+            }
+          ]
+        }
+      },
       "stage": "dev",
       "variableSyntax": "\\${([^{}:]+?(?:\\(|:)(?:[^:{}][^{}]*?)?)}",
       "versionFunctions": true,
@@ -91,13 +110,13 @@
           "LoginLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/portalo2-dev-login"
+              "LogGroupName": "/aws/lambda/my-login-function"
             }
           },
           "RegisterLogGroup": {
             "Type": "AWS::Logs::LogGroup",
             "Properties": {
-              "LogGroupName": "/aws/lambda/portalo2-dev-register"
+              "LogGroupName": "/aws/lambda/post-function"
             }
           },
           "IamRoleLambdaExecution": {
@@ -142,7 +161,10 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo2-dev*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/my-login-function:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/post-function:*"
                           }
                         ]
                       },
@@ -153,9 +175,15 @@
                         ],
                         "Resource": [
                           {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo2-dev*:*:*"
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/my-login-function:*:*"
+                          },
+                          {
+                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/post-function:*:*"
                           }
                         ]
+                      },
+                      {
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
                       }
                     ]
                   }
@@ -184,23 +212,22 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/portalo2/dev/1614694536020-2021-03-02T14:15:36.020Z/login.zip"
+                "S3Key": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z/login.zip"
               },
               "Handler": "login.login",
               "Runtime": "nodejs14.x",
-              "FunctionName": "portalo2-dev-login",
+              "FunctionName": "my-login-function",
               "MemorySize": 128,
               "Timeout": 6,
               "Description": "Function that log user.",
               "Role": {
                 "Fn::GetAtt": [
-                  "LoginIamRoleLambdaExecution",
+                  "IamRoleLambdaExecution",
                   "Arn"
                 ]
               }
             },
             "DependsOn": [
-              "LoginIamRoleLambdaExecution",
               "LoginLogGroup"
             ]
           },
@@ -211,11 +238,11 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/portalo2/dev/1614694536020-2021-03-02T14:15:36.020Z/register.zip"
+                "S3Key": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z/register.zip"
               },
               "Handler": "register.register",
               "Runtime": "nodejs14.x",
-              "FunctionName": "portalo2-dev-register",
+              "FunctionName": "post-function",
               "MemorySize": 128,
               "Timeout": 6,
               "Description": "Function that register user.",
@@ -230,170 +257,49 @@
               "RegisterLogGroup"
             ]
           },
-          "LoginLambdaVersionVlEaXdWH7Hed3NBQEIz3NDh9GD8MyXh2SfPh30ebiwo": {
+          "LoginLambdaVersionhoPPbXrVW7QI6DbHRqsNovgFmvJFGtq04M6ZBqi4GY": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LoginLambdaFunction"
               },
-              "CodeSha256": "axur5ZbHK4vYFcfCEjAZW/Y1YlyONt3KOQrgSyxhkRM=",
+              "CodeSha256": "w5SKyog9awWz3bdwkvAzp01QUWLPMNANHfAMmYEOruk=",
               "Description": "Function that log user."
             }
           },
-          "RegisterLambdaVersionIPX74KqXe8nxKSBSIY0qamyiI9nMw5Q6fN6F97EZTY": {
+          "RegisterLambdaVersionVNGFUL0r0GwoPXbYuCu4gxks5ZGznq1PFP1Q9M4uAw": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "RegisterLambdaFunction"
               },
-              "CodeSha256": "axur5ZbHK4vYFcfCEjAZW/Y1YlyONt3KOQrgSyxhkRM=",
+              "CodeSha256": "w5SKyog9awWz3bdwkvAzp01QUWLPMNANHfAMmYEOruk=",
               "Description": "Function that register user."
             }
           },
-          "ApiGatewayRestApi": {
-            "Type": "AWS::ApiGateway::RestApi",
+          "HttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
             "Properties": {
-              "Name": "portalo2-dev",
-              "EndpointConfiguration": {
-                "Types": [
-                  "EDGE"
-                ]
-              },
-              "Policy": ""
+              "Name": "dev-portalo2",
+              "ProtocolType": "HTTP"
             }
           },
-          "ApiGatewayResourceLogin": {
-            "Type": "AWS::ApiGateway::Resource",
+          "HttpApiStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
             "Properties": {
-              "ParentId": {
-                "Fn::GetAtt": [
-                  "ApiGatewayRestApi",
-                  "RootResourceId"
-                ]
+              "ApiId": {
+                "Ref": "HttpApi"
               },
-              "PathPart": "login",
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
+              "StageName": "$default",
+              "AutoDeploy": true,
+              "DefaultRouteSettings": {
+                "DetailedMetricsEnabled": false
               }
             }
           },
-          "ApiGatewayResourceRegister": {
-            "Type": "AWS::ApiGateway::Resource",
-            "Properties": {
-              "ParentId": {
-                "Fn::GetAtt": [
-                  "ApiGatewayRestApi",
-                  "RootResourceId"
-                ]
-              },
-              "PathPart": "register",
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              }
-            }
-          },
-          "ApiGatewayMethodLoginGet": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "HttpMethod": "GET",
-              "RequestParameters": {},
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceLogin"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
-              "Integration": {
-                "IntegrationHttpMethod": "POST",
-                "Type": "AWS_PROXY",
-                "Uri": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":lambda:path/2015-03-31/functions/",
-                      {
-                        "Fn::GetAtt": [
-                          "LoginLambdaFunction",
-                          "Arn"
-                        ]
-                      },
-                      "/invocations"
-                    ]
-                  ]
-                }
-              },
-              "MethodResponses": []
-            }
-          },
-          "ApiGatewayMethodRegisterPost": {
-            "Type": "AWS::ApiGateway::Method",
-            "Properties": {
-              "HttpMethod": "POST",
-              "RequestParameters": {},
-              "ResourceId": {
-                "Ref": "ApiGatewayResourceRegister"
-              },
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "ApiKeyRequired": false,
-              "AuthorizationType": "NONE",
-              "Integration": {
-                "IntegrationHttpMethod": "POST",
-                "Type": "AWS_PROXY",
-                "Uri": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition"
-                      },
-                      ":apigateway:",
-                      {
-                        "Ref": "AWS::Region"
-                      },
-                      ":lambda:path/2015-03-31/functions/",
-                      {
-                        "Fn::GetAtt": [
-                          "RegisterLambdaFunction",
-                          "Arn"
-                        ]
-                      },
-                      "/invocations"
-                    ]
-                  ]
-                }
-              },
-              "MethodResponses": []
-            }
-          },
-          "ApiGatewayDeployment1614694529665": {
-            "Type": "AWS::ApiGateway::Deployment",
-            "Properties": {
-              "RestApiId": {
-                "Ref": "ApiGatewayRestApi"
-              },
-              "StageName": "dev"
-            },
-            "DependsOn": [
-              "ApiGatewayMethodLoginGet",
-              "ApiGatewayMethodRegisterPost"
-            ]
-          },
-          "LoginLambdaPermissionApiGateway": {
+          "LoginLambdaPermissionHttpApi": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
@@ -422,15 +328,50 @@
                     },
                     ":",
                     {
-                      "Ref": "ApiGatewayRestApi"
+                      "Ref": "HttpApi"
                     },
-                    "/*/*"
+                    "/*"
                   ]
                 ]
               }
             }
           },
-          "RegisterLambdaPermissionApiGateway": {
+          "HttpApiIntegrationLogin": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"LoginLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 6500
+            }
+          },
+          "HttpApiRoutePostLogin": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /login",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationLogin"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationLogin"
+          },
+          "RegisterLambdaPermissionHttpApi": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
               "FunctionName": {
@@ -459,82 +400,48 @@
                     },
                     ":",
                     {
-                      "Ref": "ApiGatewayRestApi"
+                      "Ref": "HttpApi"
                     },
-                    "/*/*"
+                    "/*"
                   ]
                 ]
               }
             }
           },
-          "LoginIamRoleLambdaExecution": {
-            "Type": "AWS::IAM::Role",
+          "HttpApiIntegrationRegister": {
+            "Type": "AWS::ApiGatewayV2::Integration",
             "Properties": {
-              "AssumeRolePolicyDocument": {
-                "Version": "2012-10-17",
-                "Statement": [
-                  {
-                    "Effect": "Allow",
-                    "Principal": {
-                      "Service": [
-                        "lambda.amazonaws.com"
-                      ]
-                    },
-                    "Action": [
-                      "sts:AssumeRole"
-                    ]
-                  }
-                ]
+              "ApiId": {
+                "Ref": "HttpApi"
               },
-              "Policies": [
-                {
-                  "PolicyName": {
-                    "Fn::Join": [
-                      "-",
-                      [
-                        "portalo2",
-                        "dev",
-                        "lambda"
-                      ]
-                    ]
-                  },
-                  "PolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                      {
-                        "Effect": "Allow",
-                        "Action": [
-                          "logs:CreateLogStream",
-                          "logs:CreateLogGroup",
-                          "logs:PutLogEvents"
-                        ],
-                        "Resource": [
-                          {
-                            "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/portalo2-dev-login:*:*"
-                          }
-                        ]
-                      },
-                      {
-                        "Effect": "Allow",
-                        "Action": [
-                          "dynamodb:PutItem",
-                          "dynamodb:DescribeTable",
-                          "dynamodb:DeleteItem",
-                          "dynamodb:GetItem",
-                          "dynamodb:Query",
-                          "dynamodb:UpdateItem",
-                          "dynamodb:UpdateTable"
-                        ],
-                        "Resource": "arn:aws:dynamodb:eu-central-1:336526891729:table/Employees"
-                      }
-                    ]
-                  }
-                }
-              ],
-              "Path": "/",
-              "RoleName": "employeesDynamoDescribeScanPutGetUpdateDelete",
-              "ManagedPolicyArns": []
+              "IntegrationType": "AWS_PROXY",
+              "IntegrationUri": {
+                "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"RegisterLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+              },
+              "PayloadFormatVersion": "2.0",
+              "TimeoutInMillis": 6500
             }
+          },
+          "HttpApiRoutePostRegister": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+              "ApiId": {
+                "Ref": "HttpApi"
+              },
+              "RouteKey": "POST /register",
+              "Target": {
+                "Fn::Join": [
+                  "/",
+                  [
+                    "integrations",
+                    {
+                      "Ref": "HttpApiIntegrationRegister"
+                    }
+                  ]
+                ]
+              }
+            },
+            "DependsOn": "HttpApiIntegrationRegister"
           }
         },
         "Outputs": {
@@ -546,24 +453,30 @@
           "LoginLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LoginLambdaVersionVlEaXdWH7Hed3NBQEIz3NDh9GD8MyXh2SfPh30ebiwo"
+              "Ref": "LoginLambdaVersionhoPPbXrVW7QI6DbHRqsNovgFmvJFGtq04M6ZBqi4GY"
             }
           },
           "RegisterLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "RegisterLambdaVersionIPX74KqXe8nxKSBSIY0qamyiI9nMw5Q6fN6F97EZTY"
+              "Ref": "RegisterLambdaVersionVNGFUL0r0GwoPXbYuCu4gxks5ZGznq1PFP1Q9M4uAw"
             }
           },
-          "ServiceEndpoint": {
-            "Description": "URL of the service endpoint",
+          "HttpApiId": {
+            "Description": "Id of the HTTP API",
+            "Value": {
+              "Ref": "HttpApi"
+            }
+          },
+          "HttpApiUrl": {
+            "Description": "URL of the HTTP API",
             "Value": {
               "Fn::Join": [
                 "",
                 [
                   "https://",
                   {
-                    "Ref": "ApiGatewayRestApi"
+                    "Ref": "HttpApi"
                   },
                   ".execute-api.",
                   {
@@ -572,8 +485,7 @@
                   ".",
                   {
                     "Ref": "AWS::URLSuffix"
-                  },
-                  "/dev"
+                  }
                 ]
               ]
             }
@@ -664,31 +576,23 @@
       },
       "vpc": {}
     },
-    "plugins": [
-      "serverless-iam-roles-per-function"
-    ],
     "pluginsData": {},
     "functions": {
       "login": {
         "handler": "login.login",
+        "name": "my-login-function",
         "memorySize": 128,
         "description": "Function that log user.",
         "events": [
           {
-            "http": {
-              "path": "login",
-              "method": "get",
-              "integration": "AWS_PROXY"
-            }
+            "httpApi": {
+              "path": "/login",
+              "method": "post"
+            },
+            "resolvedMethod": "POST",
+            "resolvedPath": "/login"
           }
         ],
-        "iamRoleStatementsName": "employeesDynamoDescribeScanPutGetUpdateDelete",
-        "iamRoleStatements": [
-          {
-            "$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"LoginIamRoleLambdaExecution\"][\"Properties\"][\"Policies\"][0][\"PolicyDocument\"][\"Statement\"][1]"
-          }
-        ],
-        "name": "portalo2-dev-login",
         "package": {
           "artifact": "T:\\Programming\\JavaScipt Ecosystem\\01 Stack\\portalo\\aws-server\\lambda\\.serverless\\login.zip"
         },
@@ -696,22 +600,23 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "LoginLambdaVersionVlEaXdWH7Hed3NBQEIz3NDh9GD8MyXh2SfPh30ebiwo"
+        "versionLogicalId": "LoginLambdaVersionhoPPbXrVW7QI6DbHRqsNovgFmvJFGtq04M6ZBqi4GY"
       },
       "register": {
         "handler": "register.register",
+        "name": "post-function",
         "memorySize": 128,
         "description": "Function that register user.",
         "events": [
           {
-            "http": {
-              "path": "register",
-              "method": "post",
-              "integration": "AWS_PROXY"
-            }
+            "httpApi": {
+              "path": "/register",
+              "method": "post"
+            },
+            "resolvedMethod": "POST",
+            "resolvedPath": "/register"
           }
         ],
-        "name": "portalo2-dev-register",
         "package": {
           "artifact": "T:\\Programming\\JavaScipt Ecosystem\\01 Stack\\portalo\\aws-server\\lambda\\.serverless\\register.zip"
         },
@@ -719,7 +624,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "RegisterLambdaVersionIPX74KqXe8nxKSBSIY0qamyiI9nMw5Q6fN6F97EZTY"
+        "versionLogicalId": "RegisterLambdaVersionVNGFUL0r0GwoPXbYuCu4gxks5ZGznq1PFP1Q9M4uAw"
       }
     },
     "configValidationMode": "warn",
@@ -729,12 +634,9 @@
       "service": {
         "$ref": "$[\"service\"][\"serviceObject\"]"
       },
-      "plugins": {
-        "$ref": "$[\"service\"][\"plugins\"]"
-      },
       "package": {
         "individually": true,
-        "artifactDirectoryName": "serverless/portalo2/dev/1614694536020-2021-03-02T14:15:36.020Z"
+        "artifactDirectoryName": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z"
       },
       "provider": {
         "$ref": "$[\"service\"][\"provider\"]"
@@ -747,7 +649,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/portalo2/dev/1614694536020-2021-03-02T14:15:36.020Z",
+    "artifactDirectoryName": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z",
     "artifact": ""
   }
 }

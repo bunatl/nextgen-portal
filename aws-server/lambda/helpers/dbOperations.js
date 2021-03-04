@@ -1,14 +1,14 @@
-// Loads in the AWS SDK
+// // Loads in the AWS SDK
 const AWS = require('aws-sdk');
 // Creates the document client specifing the region (N.Carolina = us-east-1)
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
+const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
 
 // Writes message to DynamoDb table employees 
-export const addUser = async (userID, mail, psswd) => {
+module.exports.addUser = async (username, psswd, mail) => {
     const params = {
-        TableName: 'employees',
+        TableName: 'Employees',
         Item: {
-            'messageId': userID,
+            'username': username,
             'email': mail,
             'password': psswd
         }
@@ -16,12 +16,12 @@ export const addUser = async (userID, mail, psswd) => {
     return ddb.put(params).promise();
 };
 
-// Writes message to DynamoDb table employees 
-export const searchUser = (userID) => {
+// Searches users in DynamoDb table employees 
+module.exports.searchUser = async username => {
     const params = {
-        TableName: 'Table',
+        TableName: 'Employees',
         Key: {
-            HashKey: userID
+            'username': username
         }
     };
     return ddb.get(params).promise();
