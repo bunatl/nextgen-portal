@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-portalo-dev-223457-authRole",
+      "UnauthRoleArn": "arn:aws:iam::336526891729:role/amplify-portalo-dev-223457-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::336526891729:role/amplify-portalo-dev-223457-authRole",
+      "Region": "eu-west-2",
+      "DeploymentBucketName": "amplify-portalo-dev-223457-deployment",
+      "UnauthRoleName": "amplify-portalo-dev-223457-unauthRole",
+      "StackName": "amplify-portalo-dev-223457",
+      "StackId": "arn:aws:cloudformation:eu-west-2:336526891729:stack/amplify-portalo-dev-223457/f783a180-7f8c-11eb-88d3-066f447d62be",
+      "AmplifyAppId": "dvtr45j6sprd7"
+    },
+    "categories": {
+      "auth": {
+        "portaloeb40cf0e": {}
+      }
+    }
+  }
+}

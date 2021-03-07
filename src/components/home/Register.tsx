@@ -11,6 +11,8 @@ import {
 import { ModalContext } from '../../contexts';
 import policy from '../../utils/policy';
 
+import { Auth } from 'aws-amplify';
+
 const axios = require('axios');
 
 export const Register = () => {
@@ -27,6 +29,25 @@ export const Register = () => {
         response.data.registered
             ? message.success(response.data.body, 5)
             : message.warning(response.data.body, 10)
+
+        // amplify
+        try {
+            const { user, userConfirmed } = await Auth.signUp({
+                username: values.username,
+                password: values.password,
+                attributes: {
+                    email: values.email,          // optional
+                //     phone_number,   // optional - E.164 number convention
+                //     // other custom attributes 
+                }
+            });
+            console.log(user);
+            console.log(userConfirmed);
+            message.success(user, 5)
+        } catch (error) {
+            console.log('error signing up:', error);
+            // message.warning(error, 10)
+        }
 
         form.resetFields();
     }

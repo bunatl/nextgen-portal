@@ -2,11 +2,13 @@ import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useHistory } from "react-router-dom";
 
+import { Auth } from 'aws-amplify';
+
 const axios = require('axios');
+
 
 export const Login = () => {
     const history = useHistory();
-
     const onFinish = async (values: any) => {
         try {
             const data = {
@@ -16,6 +18,14 @@ export const Login = () => {
             }
             // send to server
             const response = await axios.post(`${process.env.REACT_APP_AWS_URL}/login`, data);
+
+            try {
+                const user = await Auth.signIn(values.username, values.password);
+                console.log('i worked. siged in', user);
+            } catch (error) {
+                console.log('error signing in', error);
+            }
+
             if (response.data.logged) {
                 message.success(response.data.body, 5)
                 // set user is logged

@@ -108,7 +108,7 @@
               "Fn::Join": [
                 "-",
                 [
-                  "portalo2",
+                  "portalo",
                   "dev",
                   "lambda"
                 ]
@@ -175,7 +175,7 @@
           "Fn::Join": [
             "-",
             [
-              "portalo2",
+              "portalo",
               "dev",
               {
                 "Ref": "AWS::Region"
@@ -193,7 +193,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/portalo2/dev/1615132440918-2021-03-07T15:54:00.918Z/login.zip"
+          "S3Key": "serverless/portalo/dev/1615143559065-2021-03-07T18:59:19.065Z/login.zip"
         },
         "Handler": "login.login",
         "Runtime": "nodejs14.x",
@@ -219,7 +219,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/portalo2/dev/1615132440918-2021-03-07T15:54:00.918Z/register.zip"
+          "S3Key": "serverless/portalo/dev/1615143559065-2021-03-07T18:59:19.065Z/register.zip"
         },
         "Handler": "register.register",
         "Runtime": "nodejs14.x",
@@ -263,7 +263,7 @@
     "HttpApi": {
       "Type": "AWS::ApiGatewayV2::Api",
       "Properties": {
-        "Name": "dev-portalo2",
+        "Name": "dev-portalo",
         "ProtocolType": "HTTP"
       }
     },
@@ -454,6 +454,31 @@
           "ReadCapacityUnits": 1,
           "WriteCapacityUnits": 1
         }
+      }
+    },
+    "CognitoUserPool": {
+      "Type": "AWS::Cognito::UserPool",
+      "Properties": {
+        "UserPoolName": "dev-user-pool",
+        "UsernameAttributes": [
+          "email"
+        ],
+        "AutoVerifiedAttributes": [
+          "email"
+        ]
+      }
+    },
+    "CognitoUserPoolClient": {
+      "Type": "AWS::Cognito::UserPoolClient",
+      "Properties": {
+        "ClientName": "dev-user-pool-client",
+        "UserPoolId": {
+          "Ref": "CognitoUserPool"
+        },
+        "ExplicitAuthFlows": [
+          "ADMIN_NO_SRP_AUTH"
+        ],
+        "GenerateSecret": false
       }
     }
   },
