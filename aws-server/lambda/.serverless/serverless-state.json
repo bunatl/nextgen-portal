@@ -7,7 +7,7 @@
     "provider": {
       "name": "aws",
       "runtime": "nodejs14.x",
-      "region": "eu-west-1",
+      "region": "eu-west-3",
       "lambdaHashingVersion": "20201221",
       "apiGateway": {
         "shouldStartNameWithService": true
@@ -26,7 +26,14 @@
                 "dynamodb:UpdateItem",
                 "dynamodb:DeleteItem"
               ],
-              "Resource": "arn:aws:dynamodb:eu-central-1:336526891729:table/Employees"
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "MyDynamoDbEmployeesTable",
+                    "Arn"
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -212,7 +219,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z/login.zip"
+                "S3Key": "serverless/portalo2/dev/1615132440918-2021-03-07T15:54:00.918Z/login.zip"
               },
               "Handler": "login.login",
               "Runtime": "nodejs14.x",
@@ -238,7 +245,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z/register.zip"
+                "S3Key": "serverless/portalo2/dev/1615132440918-2021-03-07T15:54:00.918Z/register.zip"
               },
               "Handler": "register.register",
               "Runtime": "nodejs14.x",
@@ -257,25 +264,25 @@
               "RegisterLogGroup"
             ]
           },
-          "LoginLambdaVersionhoPPbXrVW7QI6DbHRqsNovgFmvJFGtq04M6ZBqi4GY": {
+          "LoginLambdaVersionNUYMruDnB0nVWceu9VCYYSD77OAIubtHlNbQwChD7BA": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LoginLambdaFunction"
               },
-              "CodeSha256": "w5SKyog9awWz3bdwkvAzp01QUWLPMNANHfAMmYEOruk=",
+              "CodeSha256": "KvQxgUf2A0ummpOmJcS1bNcG4TxDV5cHEj4qyyDmkbw=",
               "Description": "Function that log user."
             }
           },
-          "RegisterLambdaVersionVNGFUL0r0GwoPXbYuCu4gxks5ZGznq1PFP1Q9M4uAw": {
+          "RegisterLambdaVersionHmWzm8Fr9eFmunfUetG8iMAG8mXbby5Z0qha6nYK5c8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "RegisterLambdaFunction"
               },
-              "CodeSha256": "w5SKyog9awWz3bdwkvAzp01QUWLPMNANHfAMmYEOruk=",
+              "CodeSha256": "KvQxgUf2A0ummpOmJcS1bNcG4TxDV5cHEj4qyyDmkbw=",
               "Description": "Function that register user."
             }
           },
@@ -442,6 +449,32 @@
               }
             },
             "DependsOn": "HttpApiIntegrationRegister"
+          },
+          "MyDynamoDbEmployeesTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+              "TableName": "Employees",
+              "AttributeDefinitions": [
+                {
+                  "AttributeName": "username",
+                  "AttributeType": "S"
+                }
+              ],
+              "KeySchema": [
+                {
+                  "AttributeName": "username",
+                  "KeyType": "HASH"
+                }
+              ],
+              "TimeToLiveSpecification": {
+                "AttributeName": "ExpirationTime",
+                "Enabled": true
+              },
+              "ProvisionedThroughput": {
+                "ReadCapacityUnits": 1,
+                "WriteCapacityUnits": 1
+              }
+            }
           }
         },
         "Outputs": {
@@ -453,13 +486,13 @@
           "LoginLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LoginLambdaVersionhoPPbXrVW7QI6DbHRqsNovgFmvJFGtq04M6ZBqi4GY"
+              "Ref": "LoginLambdaVersionNUYMruDnB0nVWceu9VCYYSD77OAIubtHlNbQwChD7BA"
             }
           },
           "RegisterLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "RegisterLambdaVersionVNGFUL0r0GwoPXbYuCu4gxks5ZGznq1PFP1Q9M4uAw"
+              "Ref": "RegisterLambdaVersionHmWzm8Fr9eFmunfUetG8iMAG8mXbby5Z0qha6nYK5c8"
             }
           },
           "HttpApiId": {
@@ -600,7 +633,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "LoginLambdaVersionhoPPbXrVW7QI6DbHRqsNovgFmvJFGtq04M6ZBqi4GY"
+        "versionLogicalId": "LoginLambdaVersionNUYMruDnB0nVWceu9VCYYSD77OAIubtHlNbQwChD7BA"
       },
       "register": {
         "handler": "register.register",
@@ -624,8 +657,39 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "RegisterLambdaVersionVNGFUL0r0GwoPXbYuCu4gxks5ZGznq1PFP1Q9M4uAw"
+        "versionLogicalId": "RegisterLambdaVersionHmWzm8Fr9eFmunfUetG8iMAG8mXbby5Z0qha6nYK5c8"
       }
+    },
+    "resources": {
+      "Resources": {
+        "MyDynamoDbEmployeesTable": {
+          "Type": "AWS::DynamoDB::Table",
+          "Properties": {
+            "TableName": "Employees",
+            "AttributeDefinitions": [
+              {
+                "AttributeName": "username",
+                "AttributeType": "S"
+              }
+            ],
+            "KeySchema": [
+              {
+                "AttributeName": "username",
+                "KeyType": "HASH"
+              }
+            ],
+            "TimeToLiveSpecification": {
+              "AttributeName": "ExpirationTime",
+              "Enabled": true
+            },
+            "ProvisionedThroughput": {
+              "ReadCapacityUnits": 1,
+              "WriteCapacityUnits": 1
+            }
+          }
+        }
+      },
+      "Outputs": {}
     },
     "configValidationMode": "warn",
     "serviceFilename": "serverless.yml",
@@ -636,20 +700,23 @@
       },
       "package": {
         "individually": true,
-        "artifactDirectoryName": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z"
+        "artifactDirectoryName": "serverless/portalo2/dev/1615132440918-2021-03-07T15:54:00.918Z"
       },
       "provider": {
         "$ref": "$[\"service\"][\"provider\"]"
       },
       "functions": {
         "$ref": "$[\"service\"][\"functions\"]"
+      },
+      "resources": {
+        "$ref": "$[\"service\"][\"resources\"]"
       }
     },
     "isDashboardMonitoringPreconfigured": false
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/portalo2/dev/1614896221358-2021-03-04T22:17:01.358Z",
+    "artifactDirectoryName": "serverless/portalo2/dev/1615132440918-2021-03-07T15:54:00.918Z",
     "artifact": ""
   }
 }

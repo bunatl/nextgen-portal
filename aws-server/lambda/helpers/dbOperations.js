@@ -1,7 +1,7 @@
 // // Loads in the AWS SDK
 const AWS = require('aws-sdk');
 // Creates the document client specifing the region (N.Carolina = us-east-1)
-const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-central-1' });
+const ddb = new AWS.DynamoDB.DocumentClient({ region: 'eu-west-3' });
 
 // Writes message to DynamoDb table employees 
 module.exports.addUser = async (username, psswd, mail) => {

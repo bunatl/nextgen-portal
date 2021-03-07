@@ -1,4 +1,4 @@
-service: portalo2
+service: portalo
 
 # deplyes each function individually
 package:
@@ -7,7 +7,7 @@ package:
 provider:
   name: aws
   runtime: nodejs14.x
-  region: eu-west-1
+  region: eu-west-3 # also edit aws-server/lambda/helpers/dbOperations
   lambdaHashingVersion: 20201221
   apiGateway:
     shouldStartNameWithService: true
@@ -23,7 +23,8 @@ provider:
             - dynamodb:PutItem
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
-          Resource: arn:aws:dynamodb:eu-central-1:336526891729:table/Employees
+          Resource: # or straight ARN
+            - Fn::GetAtt: ["MyDynamoDbEmployeesTable", "Arn"]
 
 functions:
   login:
@@ -45,40 +46,21 @@ functions:
         path: /register
         method: post
 
-# resources:
-#   Resources:
-#     MyDynamoDBEmployeesTable:
-#       Type: AWS::DynamoDB::Table
-#       Properties: 
-#         TableName: Employees
-#         AttributeDefinitions: 
-#           - AttributeName: username
-#             AttributeType: S
-#         KeySchema: 
-#           - AttributeName: username
-#             KeyType: HASH
-#         TimeToLiveSpecification: 
-#           AttributeName: ExpirationTime
-#           Enabled: true
-#         ProvisionedThroughput: 
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
-#     MyIamPolicy:
-#       Type: AWS::IAM::ManagedPolicy
-#       Properties:
-#         Description: Policy for using a table Employees in DynamoDB
-#         # PolicyName: employeesDynamoDescribeScanPutGetUpdateDelete
-#         PolicyDocument:
-#           Version: '2012-10-17'
-#           Statement:
-#             - 
-#               Effect: Allow
-#               Action:
-#                 - dynamodb:PutItem
-#                 - dynamodb:DescribeTable
-#                 - dynamodb:DeleteItem
-#                 - dynamodb:GetItem
-#                 - dynamodb:Query
-#                 - dynamodb:UpdateItem
-#                 - dynamodb:UpdateTable
-#               Resource: arn:aws:dynamodb:eu-central-1:336526891729:table/Employees
+resources:
+  Resources:
+    MyDynamoDbEmployeesTable:
+      Type: AWS::DynamoDB::Table
+      Properties: 
+        TableName: Employees
+        AttributeDefinitions: 
+          - AttributeName: username
+            AttributeType: S
+        KeySchema: 
+          - AttributeName: username
+            KeyType: HASH
+        TimeToLiveSpecification: 
+          AttributeName: ExpirationTime
+          Enabled: true
+        ProvisionedThroughput: 
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
