@@ -8,7 +8,7 @@ provider:
   name: aws
   runtime: nodejs14.x
   stage: dev
-  region: eu-west-3 # also edit aws-server/lambda/helpers/dbOperations
+  region: us-west-2 # also edit aws-server/lambda/helpers/dbOperations
   lambdaHashingVersion: 20201221
   apiGateway:
     shouldStartNameWithService: true
@@ -69,6 +69,13 @@ resources:
       Type: AWS::Cognito::UserPool
       Properties:
           UserPoolName: ${self:provider.stage}-user-pool
+          Policies:
+            PasswordPolicy:
+              MinimumLength: 6
+              RequireLowercase: false
+              RequireNumbers: false
+              RequireSymbols: false
+              RequireUppercase: true
           UsernameAttributes:
               - email
           AutoVerifiedAttributes:
@@ -85,4 +92,12 @@ resources:
           # SupportedIdentityProviders:
           #   - COGNITO
           #   - Facebook
-          #   - Google
+    CognitoUserIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties: 
+        IdentityPoolName: ${self:provider.stage}-user-identity-pool
+        AllowUnauthenticatedIdentities: true
+        CognitoIdentityProviders: 
+          - ClientId: !Ref CognitoUserPoolClient
+            ProviderName: !GetAtt CognitoUserPool.ProviderName
+        # SupportedLoginProviders: Json

@@ -8,7 +8,7 @@
       "name": "aws",
       "runtime": "nodejs14.x",
       "stage": "dev",
-      "region": "eu-west-3",
+      "region": "us-west-2",
       "lambdaHashingVersion": "20201221",
       "apiGateway": {
         "shouldStartNameWithService": true
@@ -219,7 +219,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/portalo/dev/1615143559065-2021-03-07T18:59:19.065Z/login.zip"
+                "S3Key": "serverless/portalo/dev/1615326380108-2021-03-09T21:46:20.108Z/login.zip"
               },
               "Handler": "login.login",
               "Runtime": "nodejs14.x",
@@ -245,7 +245,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/portalo/dev/1615143559065-2021-03-07T18:59:19.065Z/register.zip"
+                "S3Key": "serverless/portalo/dev/1615326380108-2021-03-09T21:46:20.108Z/register.zip"
               },
               "Handler": "register.register",
               "Runtime": "nodejs14.x",
@@ -264,25 +264,25 @@
               "RegisterLogGroup"
             ]
           },
-          "LoginLambdaVersionNUYMruDnB0nVWceu9VCYYSD77OAIubtHlNbQwChD7BA": {
+          "LoginLambdaVersionSnG3lopGnDtW9wXIID8eXTfANimhbh9AugcqgW16Fc": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "LoginLambdaFunction"
               },
-              "CodeSha256": "KvQxgUf2A0ummpOmJcS1bNcG4TxDV5cHEj4qyyDmkbw=",
+              "CodeSha256": "g02n8sZSzY3/R/9V8TBc+fhlr0uq1ak2SBtAw8J/pPQ=",
               "Description": "Function that log user."
             }
           },
-          "RegisterLambdaVersionHmWzm8Fr9eFmunfUetG8iMAG8mXbby5Z0qha6nYK5c8": {
+          "RegisterLambdaVersionb6eB2e3HpTkh8VJiQjh5acDwt2UzEJmhpDPERGVg": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "RegisterLambdaFunction"
               },
-              "CodeSha256": "KvQxgUf2A0ummpOmJcS1bNcG4TxDV5cHEj4qyyDmkbw=",
+              "CodeSha256": "g02n8sZSzY3/R/9V8TBc+fhlr0uq1ak2SBtAw8J/pPQ=",
               "Description": "Function that register user."
             }
           },
@@ -480,6 +480,15 @@
             "Type": "AWS::Cognito::UserPool",
             "Properties": {
               "UserPoolName": "dev-user-pool",
+              "Policies": {
+                "PasswordPolicy": {
+                  "MinimumLength": 6,
+                  "RequireLowercase": false,
+                  "RequireNumbers": false,
+                  "RequireSymbols": false,
+                  "RequireUppercase": true
+                }
+              },
               "UsernameAttributes": [
                 "email"
               ],
@@ -500,6 +509,26 @@
               ],
               "GenerateSecret": false
             }
+          },
+          "CognitoUserIdentityPool": {
+            "Type": "AWS::Cognito::IdentityPool",
+            "Properties": {
+              "IdentityPoolName": "dev-user--identity-pool",
+              "AllowUnauthenticatedIdentities": true,
+              "CognitoIdentityProviders": [
+                {
+                  "ClientId": {
+                    "Ref": "CognitoUserPoolClient"
+                  },
+                  "ProviderName": {
+                    "Fn::GetAtt": [
+                      "CognitoUserPool",
+                      "ProviderName"
+                    ]
+                  }
+                }
+              ]
+            }
           }
         },
         "Outputs": {
@@ -511,13 +540,13 @@
           "LoginLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "LoginLambdaVersionNUYMruDnB0nVWceu9VCYYSD77OAIubtHlNbQwChD7BA"
+              "Ref": "LoginLambdaVersionSnG3lopGnDtW9wXIID8eXTfANimhbh9AugcqgW16Fc"
             }
           },
           "RegisterLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "RegisterLambdaVersionHmWzm8Fr9eFmunfUetG8iMAG8mXbby5Z0qha6nYK5c8"
+              "Ref": "RegisterLambdaVersionb6eB2e3HpTkh8VJiQjh5acDwt2UzEJmhpDPERGVg"
             }
           },
           "HttpApiId": {
@@ -658,7 +687,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "LoginLambdaVersionNUYMruDnB0nVWceu9VCYYSD77OAIubtHlNbQwChD7BA"
+        "versionLogicalId": "LoginLambdaVersionSnG3lopGnDtW9wXIID8eXTfANimhbh9AugcqgW16Fc"
       },
       "register": {
         "handler": "register.register",
@@ -682,7 +711,7 @@
         "timeout": 6,
         "runtime": "nodejs14.x",
         "vpc": {},
-        "versionLogicalId": "RegisterLambdaVersionHmWzm8Fr9eFmunfUetG8iMAG8mXbby5Z0qha6nYK5c8"
+        "versionLogicalId": "RegisterLambdaVersionb6eB2e3HpTkh8VJiQjh5acDwt2UzEJmhpDPERGVg"
       }
     },
     "resources": {
@@ -717,6 +746,15 @@
           "Type": "AWS::Cognito::UserPool",
           "Properties": {
             "UserPoolName": "dev-user-pool",
+            "Policies": {
+              "PasswordPolicy": {
+                "MinimumLength": 6,
+                "RequireLowercase": false,
+                "RequireNumbers": false,
+                "RequireSymbols": false,
+                "RequireUppercase": true
+              }
+            },
             "UsernameAttributes": [
               "email"
             ],
@@ -737,6 +775,26 @@
             ],
             "GenerateSecret": false
           }
+        },
+        "CognitoUserIdentityPool": {
+          "Type": "AWS::Cognito::IdentityPool",
+          "Properties": {
+            "IdentityPoolName": "dev-user--identity-pool",
+            "AllowUnauthenticatedIdentities": true,
+            "CognitoIdentityProviders": [
+              {
+                "ClientId": {
+                  "Ref": "CognitoUserPoolClient"
+                },
+                "ProviderName": {
+                  "Fn::GetAtt": [
+                    "CognitoUserPool",
+                    "ProviderName"
+                  ]
+                }
+              }
+            ]
+          }
         }
       },
       "Outputs": {}
@@ -750,7 +808,7 @@
       },
       "package": {
         "individually": true,
-        "artifactDirectoryName": "serverless/portalo/dev/1615143559065-2021-03-07T18:59:19.065Z"
+        "artifactDirectoryName": "serverless/portalo/dev/1615326380108-2021-03-09T21:46:20.108Z"
       },
       "provider": {
         "$ref": "$[\"service\"][\"provider\"]"
@@ -766,7 +824,7 @@
   },
   "package": {
     "individually": true,
-    "artifactDirectoryName": "serverless/portalo/dev/1615143559065-2021-03-07T18:59:19.065Z",
+    "artifactDirectoryName": "serverless/portalo/dev/1615326380108-2021-03-09T21:46:20.108Z",
     "artifact": ""
   }
 }
