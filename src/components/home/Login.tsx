@@ -4,41 +4,32 @@ import { useHistory } from "react-router-dom";
 
 import { Auth } from 'aws-amplify';
 
-const axios = require('axios');
-
-
 export const Login = () => {
     const history = useHistory();
     const onFinish = async (values: any) => {
         try {
-            const data = {
-                "username": values.username,
-                "psswd": values.password,
-                "email": "test@test.com"
-            }
-            // send to server
-            const response = await axios.post(`${process.env.REACT_APP_AWS_URL}/login`, data);
-
-            try {
-                const user = await Auth.signIn(values.username, values.password);
-                console.log('i worked. siged in', user);
-            } catch (error) {
-                console.log('error signing in', error);
-            }
-
-            if (response.data.logged) {
-                message.success(response.data.body, 5)
-                // set user is logged
-                localStorage.setItem("user", values.username);
-                // set if the should be remembered
-                localStorage.setItem("remember", values.remember);
-                // redirect to dashboard -> https://stackoverflow.com/questions/60691861/redirect-react-form-component-on-submit-react-router-v5-1
-                history.push("/dashboard");
-            } else
-                message.warning(response.data.body, 10);
+            const user = await Auth.signIn(values.username, values.password);
+            // console.log('i worked. siged in', user);
+            message.success("You have been signed in successfully", 5)
+            history.push("/dashboard");
         } catch (error) {
-            console.error(error);
+            console.error('error signing in', error);
+            message.warning(error.message, 10);
         }
+
+        //     if (response.data.logged) {
+        //         message.success(response.data.body, 5)
+        //         // set user is logged
+        //         localStorage.setItem("user", values.username);
+        //         // set if the should be remembered
+        //         localStorage.setItem("remember", values.remember);
+        //         // redirect to dashboard -> https://stackoverflow.com/questions/60691861/redirect-react-form-component-on-submit-react-router-v5-1
+        //         history.push("/dashboard");
+        //     } else
+        //         message.warning(response.data.body, 10);
+        // } catch (error) {
+        //     console.error(error);
+        // }
     };
 
     return (

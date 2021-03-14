@@ -19,13 +19,13 @@ export const Home = () => {
   return (
     <Router>
       <div id="home">
-        <Route path="/(|dashboard)/" component={Header}></Route>
-        <Route exact path="/" component={Form}></Route>
-        {/* protected route (dashboard)*/}
-        <PrivateRoute path="/dashboard" component={Dashboard}></PrivateRoute>
+        <Route path="/(|dashboard)/" component={Header} />
+        <Route exact path="/" component={Form} />
+        {/* dashboard is a protected route */}
+        <PrivateRoute path="/dashboard" component={Dashboard} />
         {/* most likely will sit on subdomain root */}
-        <Route path="/qest" component={Qest}></Route>
-        <Route path="/(|dashboard)/" component={Footer}></Route>
+        <Route path="/qest" component={Qest} />
+        <Route path="/(|dashboard)/" component={Footer} />
       </div>
     </Router>
   );

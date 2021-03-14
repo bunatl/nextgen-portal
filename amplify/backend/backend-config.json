@@ -1,7 +1,8 @@
 {
   "auth": {
-    "portaloeb40cf0e": {
+    "amplifyb81ca23a": {
       "service": "Cognito",
+      "serviceType": "imported",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false

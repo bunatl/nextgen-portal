@@ -13,43 +13,29 @@ import policy from '../../utils/policy';
 
 import { Auth } from 'aws-amplify';
 
-const axios = require('axios');
 
 export const Register = () => {
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
 
     const onFinish = async (values: any) => {
-        const data = {
-            "username": values.username,
-            "psswd": values.password,
-            "email": values.email
-        }
-        const response = await axios.post(`${process.env.REACT_APP_AWS_URL}/register`, data);
-        response.data.registered
-            ? message.success(response.data.body, 5)
-            : message.warning(response.data.body, 10)
-
         // amplify
         try {
             const { user, userConfirmed } = await Auth.signUp({
-                username: values.username,
+                username: values.email,
                 password: values.password,
                 attributes: {
                     email: values.email,          // optional
-                //     phone_number,   // optional - E.164 number convention
-                //     // other custom attributes 
+                    //     phone_number,   // optional - E.164 number convention
+                    //     // other custom attributes 
                 }
             });
-            console.log(user);
-            console.log(userConfirmed);
-            message.success(user, 5)
+            // user is not confirmed!
+            message.success(`User ${values.username} has been created`, 5)
+            form.resetFields();
         } catch (error) {
-            console.log('error signing up:', error);
-            // message.warning(error, 10)
+            message.warning(error.message, 10);
         }
-
-        form.resetFields();
     }
 
     return (
@@ -141,10 +127,12 @@ export const Register = () => {
                         I have read the <span onClick={() => setVisibility(true)}>agreement</span>
                     </Checkbox>
                 </Form.Item>
+
                 <ModalBox />
+
                 <Button type="primary" htmlType="submit">
                     Register
-            </Button>
+                </Button>
             </Form.Item>
         </Form >
     );

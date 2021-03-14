@@ -23,7 +23,7 @@ Portalo is an online web application that centralized your company's internal we
 
 #### Backend
 * [AWS lambda](https://aws.amazon.com/lambda/) - Serveless compute service as opposed to [Node.js](https://nodejs.org) (server side JavaScript) with [Express.js](https://expressjs.com/)
-* [AWS API Gateway](https://aws.amazon.com/api-gateway/) - Create, maintain, and secure APIs at any scale
+<!-- * [AWS API Gateway](https://aws.amazon.com/api-gateway/) - Create, maintain, and secure APIs at any scale -->
 * [AWS Dynamo DB](https://aws.amazon.com/dynamodb/) - Fast and flexible NoSQL key-value and document database that delivers single-digit millisecond performance at any scale
 * [AWS IAM](https://aws.amazon.com/iam/) - Securely manage access to AWS services and resources
 

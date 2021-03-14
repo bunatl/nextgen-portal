@@ -101,3 +101,4 @@ resources:
           - ClientId: !Ref CognitoUserPoolClient
             ProviderName: !GetAtt CognitoUserPool.ProviderName
         # SupportedLoginProviders: Json
+        # Cannot read property 'authenticated' of undefined
