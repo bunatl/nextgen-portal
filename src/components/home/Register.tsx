@@ -13,7 +13,6 @@ import policy from '../../utils/policy';
 
 import { Auth } from 'aws-amplify';
 
-
 export const Register = () => {
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
@@ -25,16 +24,16 @@ export const Register = () => {
                 username: values.email,
                 password: values.password,
                 attributes: {
-                    email: values.email,          // optional
+                    // customUsername: values.username,          // optional
                     //     phone_number,   // optional - E.164 number convention
                     //     // other custom attributes 
                 }
             });
-            // user is not confirmed!
-            message.success(`User ${values.username} has been created`, 5)
+            message.success(`User ${user.getUsername()} has been created`, 5)
+                .then(() => !userConfirmed ? message.warning('Please confirm your account.', 5) : '')
             form.resetFields();
         } catch (error) {
-            message.warning(error.message, 10);
+            message.error(error.message, 10);
         }
     }
 

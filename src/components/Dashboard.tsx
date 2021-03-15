@@ -14,6 +14,7 @@ const listOfApps: ITile[] = [
 export const Dashboard = () => {
     return (
         <main>
+            <h2>{localStorage.getItem('user')}</h2>
             {
                 listOfApps.map((x, i) => (
                     <Tile

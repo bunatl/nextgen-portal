@@ -8,28 +8,14 @@ export const Login = () => {
     const history = useHistory();
     const onFinish = async (values: any) => {
         try {
-            const user = await Auth.signIn(values.username, values.password);
-            // console.log('i worked. siged in', user);
-            message.success("You have been signed in successfully", 5)
+            const user = await Auth.signIn(values.email, values.password);
+            // to keep user logged
+            localStorage.setItem("user", user.username);
+            message.success("You have been signed in successfully", 5);
             history.push("/dashboard");
         } catch (error) {
-            console.error('error signing in', error);
-            message.warning(error.message, 10);
+            message.error(error.message, 10);
         }
-
-        //     if (response.data.logged) {
-        //         message.success(response.data.body, 5)
-        //         // set user is logged
-        //         localStorage.setItem("user", values.username);
-        //         // set if the should be remembered
-        //         localStorage.setItem("remember", values.remember);
-        //         // redirect to dashboard -> https://stackoverflow.com/questions/60691861/redirect-react-form-component-on-submit-react-router-v5-1
-        //         history.push("/dashboard");
-        //     } else
-        //         message.warning(response.data.body, 10);
-        // } catch (error) {
-        //     console.error(error);
-        // }
     };
 
     return (
@@ -42,18 +28,18 @@ export const Login = () => {
             onFinish={onFinish}
         >
             <Form.Item
-                name="username"
+                name="email"
                 rules={[
                     {
                         required: true,
-                        message: 'Please input your Username!',
+                        message: 'Please input your login email!',
                     },
                 ]}
             >
                 <Input
                     prefix={<UserOutlined className="site-form-item-icon" />}
-                    autoComplete="username"
-                    placeholder="Username"
+                    autoComplete="email"
+                    placeholder="email"
                 />
             </Form.Item>
             <Form.Item

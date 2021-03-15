@@ -19,8 +19,8 @@ export const Form = () => {
     const history = useHistory();
     // usehistory() must be used in sub component -> https://stackoverflow.com/a/58221867/11231064
     useEffect(() => {
-        // do not load form and redirect straight to dashboard if user is still logged & wanted to be remembered
-        if (localStorage.getItem("user") && localStorage.getItem("remember") === "true")
+        // do not load form and redirect the user straight to dashboard if the user is still logged & wanted to be remembered
+        if (localStorage.getItem("user"))
             history.push('/dashboard');
     }, [ history ])
 
