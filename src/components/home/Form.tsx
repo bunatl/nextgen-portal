@@ -6,12 +6,12 @@ import { activeTabType } from '../../types/tabs';
 // context
 import { ModalContext } from '../../contexts'
 // components
-import { Login } from './Login';
-import { Register } from './Register';
+import Login from './Login';
+import Register from './Register';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
-export const Form = () => {
+export default function Form() {
     const [ activeTab, setActiveTab ] = useState<activeTabType>('login');
     const [ visibility, setVisibility ] = useState<boolean>(false);
     const providerValue = useMemo(() => ({ visibility, setVisibility }), [ visibility, setVisibility ]);

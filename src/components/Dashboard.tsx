@@ -11,7 +11,7 @@ const listOfApps: ITile[] = [
     { tileTitle: "test", tileHero: "", tileActionList: [ <EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" /> ], tileDescription: "" }
 ];
 
-export const Dashboard = () => {
+export default function Dashboard() {
     return (
         <main>
             <h2>{localStorage.getItem('user')}</h2>

@@ -3,7 +3,7 @@ import { Auth } from 'aws-amplify';
 import { useHistory } from 'react-router-dom';
 import { LoginOutlined } from '@ant-design/icons';
 
-export const Header = () => {
+export default function Header() {
     const history = useHistory();
 
     const signout = async () => {

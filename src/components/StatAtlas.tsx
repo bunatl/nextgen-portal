@@ -11,7 +11,7 @@ import {
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-export const StatAtlas = () => {
+export default function StatAtlas() {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible > {/* collapsed={collapsed} onCollapse={this.onCollapse} */}

@@ -1,10 +1,9 @@
-import { FC } from 'react'
 import { Route } from 'react-router-dom';
 
 import { NotAuthorized } from './results/NotAuthorized';
 
 // based on https://reactrouter.com/web/example/auth-workflow
-export const PrivateRoute: FC<any> = ({ component: Component, ...rest }) => {
+export default function PrivateRoute({ component: Component, ...rest }: any) {
     return (
         <Route
             {...rest}

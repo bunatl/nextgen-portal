@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 
 import { Auth } from 'aws-amplify';
 
-export const Login = () => {
+export default function Login() {
     const history = useHistory();
     const onFinish = async (values: any) => {
         try {

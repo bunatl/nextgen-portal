@@ -13,7 +13,7 @@ import policy from '../../utils/policy';
 
 import { Auth } from 'aws-amplify';
 
-export const Register = () => {
+export default function Register() {
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
 
