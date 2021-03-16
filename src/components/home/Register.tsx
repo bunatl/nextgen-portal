@@ -25,7 +25,6 @@ export const Register = () => {
                 password: values.password,
                 attributes: {
                     // customUsername: values.username,          // optional
-                    //     phone_number,   // optional - E.164 number convention
                     //     // other custom attributes 
                 }
             });

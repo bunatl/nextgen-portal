@@ -65,7 +65,7 @@ export const Login = () => {
 
                 <Button type="primary" htmlType="submit" className="login-form-button">
                     Log in
-        </Button>
+                </Button>
             </Form.Item>
         </Form>
     )

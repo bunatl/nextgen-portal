@@ -11,9 +11,7 @@ import {
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 
-export const Qest = () => {
-
-
+export const StatAtlas = () => {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <Sider collapsible > {/* collapsed={collapsed} onCollapse={this.onCollapse} */}
