@@ -28,24 +28,17 @@ provider:
             - Fn::GetAtt: ["MyDynamoDbEmployeesTable", "Arn"]
 
 functions:
-  login:
-    handler: login.login
-    name: my-login-function
-    memorySize: 128
-    description: Function that log user.
+  graphql:
+    handler: graphql/handler.graphqlHandler
     events:
-    - httpApi: 
-        path: /login
+    - http:
+        path: graphql
         method: post
-  register:
-    handler: register.register
-    name: post-function
-    memorySize: 128
-    description: Function that register user.
-    events:
-    - httpApi: 
-        path: /register
-        method: post
+        cors: true
+    - http:
+        path: graphql
+        method: get
+        cors: true
 
 resources:
   Resources:

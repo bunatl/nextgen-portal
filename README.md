@@ -23,13 +23,13 @@ Portalo is an online web application that centralized your company's internal we
 
 #### Backend
 * [AWS lambda](https://aws.amazon.com/lambda/) - Serveless compute service as opposed to [Node.js](https://nodejs.org) (server side JavaScript) with [Express.js](https://expressjs.com/)
-<!-- * [AWS API Gateway](https://aws.amazon.com/api-gateway/) - Create, maintain, and secure APIs at any scale -->
+* [AWS API Gateway](https://aws.amazon.com/api-gateway/) - Create, maintain, and secure APIs at any scale
 * [AWS Dynamo DB](https://aws.amazon.com/dynamodb/) - Fast and flexible NoSQL key-value and document database that delivers single-digit millisecond performance at any scale
 * [AWS IAM](https://aws.amazon.com/iam/) - Securely manage access to AWS services and resources
+* [AWS Amplify](https://aws.amazon.com/amplify/) - Fastest, easiest way to build mobile and web apps that scale
 
-<!-- * [GraphQL](https://graphql.org/) - query language for API -->
-<!-- * [Appolo Server](https://www.apollographql.com/docs/apollo-server/) - GraphQL server -->
-<!-- * [GraphQL Code Generator](https://graphql-code-generator.com/) - typescript code generator from GraphQL schema -->
+* [GraphQL](https://graphql.org/) - query language for API
+* [apollo-server-lambda](https://www.apollographql.com/docs/apollo-server/v1/servers/lambda/) - Apollo Server for AWS Lambda
 
 ## Installation
  * To start frontend: `yarn start`
