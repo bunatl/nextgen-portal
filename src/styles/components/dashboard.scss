@@ -1,7 +1,19 @@
-main{    
+#modules{    
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     justify-items: center;
 
     row-gap: 7em;
+}
+
+.dashboard-header{
+    color: rgba(167, 177, 187, 0.9);
+    @include flex(row, nowrap, space-between);
+    padding: 0 1em;
+    font-size: 1.5em;
+
+    h1{
+        color: rgba(167, 177, 187, 0.9);
+        font-size: 1.75em;
+    }
 }

@@ -9,11 +9,10 @@ import {
 import { Spin } from 'antd';
 
 // components
-const Header = React.lazy(() => import('./home/Header'));
 const Form = React.lazy(() => import('./home/Form'));
 const Dashboard = React.lazy(() => import('./Dashboard'));
 const PrivateRoute = React.lazy(() => import('./PrivateRoute'));
-const StatAtlas = React.lazy(() => import('./StatAtlas'));
+// const StatAtlas = React.lazy(() => import('./Dashboard'));
 const Footer = React.lazy(() => import('./home/Footer'));
 const NotFound = React.lazy(() => import('./results/NotFound'));
 
@@ -23,15 +22,13 @@ export const Home = () => {
       <Router>
         <div id="home">
           <Switch>
-            {/* matches all possible routes */}
-            <Route exact path="/(|dashboard|statatlas)/">
-              <Route path="/(|dashboard)/" component={Header} />
+            {/* matches all routes with content*/}
+            <Route exact path="/(|dashboard)/">
+              <Route exact path="/" component={() => <header id="homeHeader"><h1>Portalo</h1></header>} />
               <Route exact path="/" component={Form} />
               {/* dashboard is a protected route */}
               <PrivateRoute path="/dashboard" component={Dashboard} />
-              {/* most likely will sit on subdomain root */}
-              <Route path="/statatlas" component={StatAtlas} />
-              <Route path="/(|dashboard)/" component={Footer} />
+              <Route exact path="/" component={Footer} />
             </Route>
             {/* All other outes are rendered as 404 page */}
             <Route component={NotFound} />

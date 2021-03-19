@@ -18,7 +18,6 @@ Portalo is an online web application that centralized your company's internal we
 * [Yarn](https://yarnpkg.com) - package manager
 * [Sass](https://sass-lang.com/) - preprocessor scripting language that is interpreted or compiled into Cascading Style Sheets (CSS)
 * [Ant Design](https://ant.design/) - UI framework
-* [axios](https://github.com/axios/axios) - Promise based HTTP client
 * [react-router-dom](https://reactrouter.com/web/guides/quick-start) - Declarative routing for React.js
 
 #### Backend

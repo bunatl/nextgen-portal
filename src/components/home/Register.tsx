@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import {
     Form,
     Input,
@@ -13,9 +13,13 @@ import policy from '../../utils/policy';
 
 import { Auth } from 'aws-amplify';
 
+import { rolesTypes } from '../../types/roles'
+
 export default function Register() {
     const [ form ] = Form.useForm();
     const { setVisibility } = useContext(ModalContext);
+    const [ masterPsswdVisibility, setMasterPsswdVisibility ] = useState<boolean>(false);
+    const [ adminAccount, setAdminAccount ] = useState<rolesTypes>('user');
 
     const onFinish = async (values: any) => {
         // amplify
@@ -24,12 +28,15 @@ export default function Register() {
                 username: values.email,
                 password: values.password,
                 attributes: {
-                    // customUsername: values.username,          // optional
-                    //     // other custom attributes 
+                    profile: adminAccount,
+                    // https://docs.amplify.aws/lib/auth/emailpassword/q/platform/js#confirm-sign-up
+                    // other custom attributes 
+                    // 'custom:role': adminAccount
                 }
             });
-            message.success(`User ${user.getUsername()} has been created`, 5)
+            message.success(`User ${user.getUsername()} has been created`, 3)
                 .then(() => !userConfirmed ? message.warning('Please confirm your account.', 5) : '')
+            setAdminAccount('user');
             form.resetFields();
         } catch (error) {
             message.error(error.message, 10);
@@ -43,19 +50,6 @@ export default function Register() {
             onFinish={onFinish}
             scrollToFirstError
         >
-            <Form.Item
-                name="username"
-                label={"username"}
-                rules={[
-                    {
-                        required: true,
-                        message: 'Please input your username!',
-                        whitespace: true,
-                    },
-                ]}
-            >
-                <Input autoComplete="username" />
-            </Form.Item>
             <Form.Item
                 name="email"
                 label="E-mail"
@@ -110,28 +104,53 @@ export default function Register() {
             >
                 <Input.Password autoComplete="new-password" />
             </Form.Item>
-            <Form.Item>
-                <Form.Item
-                    name="agreement"
-                    valuePropName="checked"
-                    rules={[
-                        {
-                            validator: (_, value) =>
-                                value ? Promise.resolve() : Promise.reject('Should accept agreement'),
-                        },
-                    ]}
-                >
-                    <Checkbox>
-                        I have read the <span onClick={() => setVisibility(true)}>agreement</span>
-                    </Checkbox>
-                </Form.Item>
-
-                <ModalBox />
-
-                <Button type="primary" htmlType="submit">
-                    Register
-                </Button>
+            <Form.Item
+                name="agreement"
+                valuePropName="checked"
+                rules={[
+                    {
+                        validator: (_, value) =>
+                            value ? Promise.resolve() : Promise.reject('Should accept agreement'),
+                    },
+                ]}
+            >
+                <Checkbox>
+                    I have read the <span onClick={() => setVisibility(true)}>agreement</span>
+                </Checkbox>
             </Form.Item>
+
+            <Form.Item
+                name="adminRole"
+                valuePropName="checked"
+            >
+                <Checkbox onChange={() => setMasterPsswdVisibility(!masterPsswdVisibility)}>
+                    Give the account admin privileges
+                    </Checkbox>
+            </Form.Item>
+
+            {masterPsswdVisibility ? <Form.Item
+                name="masterPassword"
+                label={"masterpassword"}
+                hasFeedback
+                rules={[
+                    ({ getFieldValue }) => ({
+                        validator(_, value) {
+                            if (!value || getFieldValue('masterPassword') === process.env.REACT_APP_MASTER_PASSWORD) {
+                                setAdminAccount('admin');
+                                return Promise.resolve();
+                            }
+
+                            return Promise.reject('This is not correct master password');
+                        },
+                    }),
+                ]}
+            >
+                <Input.Password autoComplete="master-password" />
+            </Form.Item>
+                : ''}
+
+            <Button type="primary" htmlType="submit">Register</Button>
+            <ModalBox />
         </Form >
     );
 };

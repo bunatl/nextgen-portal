@@ -1,31 +1,41 @@
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+// import { Component } from 'react';
+import { useEffect, useState } from 'react';
+import { Auth } from 'aws-amplify';
+import { Layout } from 'antd';
 
-import { ITile } from '../types/tile';
-import { Tile } from './dashboard/Tile';
+import { rolesTypes } from '../types/roles';
 
-const listOfApps: ITile[] = [
-    { tileTitle: "QESTak", tileHero: "", tileActionList: [ <SettingOutlined key="setting" />, <EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" /> ], tileDescription: "Helps you improve" },
-    { tileTitle: "test", tileHero: "", tileActionList: [ <SettingOutlined key="setting" /> ], tileDescription: "" },
-    { tileTitle: "test", tileHero: "", tileActionList: [ <SettingOutlined key="setting" /> ], tileDescription: "" },
-    { tileTitle: "test", tileHero: "", tileActionList: [ <SettingOutlined key="setting" />, <EllipsisOutlined key="ellipsis" /> ], tileDescription: "" },
-    { tileTitle: "test", tileHero: "", tileActionList: [ <EditOutlined key="edit" />, <EllipsisOutlined key="ellipsis" /> ], tileDescription: "" }
-];
+import { Sidebar } from './dashboard/Sidebar';
+import { CustomAntHeader } from './dashboard/Header';
+import Footer from './home/Footer';
+
+const { Content } = Layout;
+
 
 export default function Dashboard() {
+    const [ role, setRole ] = useState<rolesTypes>('unset');
+    const [ username, setUsername ] = useState<string>('');
+
+    useEffect(() => {
+        getUserInfo()
+    }, [])
+
+    const getUserInfo = async () => {
+        const { attributes: { email, profile } } = await Auth.currentUserInfo();
+        setUsername(email);
+        setRole(profile);
+    }
+
     return (
-        <main>
-            <h2>{localStorage.getItem('user')}</h2>
-            {
-                listOfApps.map((x, i) => (
-                    <Tile
-                        key={i}
-                        tileTitle={x.tileTitle}
-                        tileDescription={x.tileDescription}
-                        tileActionList={x.tileActionList}
-                        tileHero={x.tileHero}
-                    />
-                ))
-            }
-        </main>
-    )
+        <Layout style={{ minHeight: '100vh' }}>
+            <Sidebar userRole={role} />
+            <Layout className="site-layout">
+                <CustomAntHeader user={username} />
+                <Content style={{ margin: '0 16px' }}>
+                    <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>Bill is a cat.</div>
+                </Content>
+                <Footer />
+            </Layout>
+        </Layout>
+    );
 }

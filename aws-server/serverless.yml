@@ -66,13 +66,14 @@ resources:
             PasswordPolicy:
               MinimumLength: 6
               RequireLowercase: false
-              RequireNumbers: false
+              RequireNumbers: true
               RequireSymbols: false
-              RequireUppercase: true
+              RequireUppercase: false
           UsernameAttributes:
               - email
-          AutoVerifiedAttributes:
-              - email
+          # AutoVerifiedAttributes: # this means it requires verification!!
+          #     - email
+
     CognitoUserPoolClient:  # client that can access the cognito user pool
       Type: AWS::Cognito::UserPoolClient
       Properties:
