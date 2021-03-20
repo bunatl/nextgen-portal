@@ -1,5 +1,4 @@
 import { Route } from 'react-router-dom';
-
 import { NotAuthorized } from './results/NotAuthorized';
 
 // based on https://reactrouter.com/web/example/auth-workflow

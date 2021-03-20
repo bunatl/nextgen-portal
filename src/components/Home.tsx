@@ -1,4 +1,4 @@
-import React from 'react';
+import { lazy, Suspense } from 'react';
 
 import {
   BrowserRouter as Router,
@@ -9,16 +9,15 @@ import {
 import { Spin } from 'antd';
 
 // components
-const Form = React.lazy(() => import('./home/Form'));
-const Dashboard = React.lazy(() => import('./Dashboard'));
-const PrivateRoute = React.lazy(() => import('./PrivateRoute'));
-// const StatAtlas = React.lazy(() => import('./Dashboard'));
-const Footer = React.lazy(() => import('./home/Footer'));
-const NotFound = React.lazy(() => import('./results/NotFound'));
+const Form = lazy(() => import('./home/Form'));
+const Dashboard = lazy(() => import('./Dashboard'));
+const PrivateRoute = lazy(() => import('./PrivateRoute'));
+const Footer = lazy(() => import('./home/Footer'));
+const NotFound = lazy(() => import('./results/NotFound'));
 
 export const Home = () => {
   return (
-    <React.Suspense fallback={<Spin tip="Loading..." ></Spin>}>
+    <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
       <Router>
         <div id="home">
           <Switch>
@@ -35,6 +34,6 @@ export const Home = () => {
           </Switch>
         </div>
       </Router>
-    </React.Suspense>
+    </Suspense>
   );
 };

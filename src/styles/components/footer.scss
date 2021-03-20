@@ -1,12 +1,14 @@
 footer{
+    color: rgba(255, 255, 255, 0.7);
     padding: 1em 0 .25em 0;
-    border-top: 1px solid dodgerblue;
-    background: lightskyblue;
+    border-top: 1px solid black;
+    // background: rgba(0, 0, 0, 0.65);
+    background: #36454F;
     text-align: center;
 
     > a,
     > a:hover {
         font-weight: bold;
-        color: black;
+        color: rgba(255, 255, 255, 0.8);
     }
 }

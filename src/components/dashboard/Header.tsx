@@ -1,14 +1,13 @@
 import { FC } from 'react'
-import { Layout } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
-import { Auth } from 'aws-amplify';
 import { useHistory } from 'react-router-dom';
 
-const { Header } = Layout;
+import { Layout, Tooltip } from 'antd';
+import { LoginOutlined } from '@ant-design/icons';
 
-export interface ICustomAntHeader {
-    user: string;
-}
+import { Auth } from 'aws-amplify';
+import { ICustomAntHeader } from '../../types/dashboard';
+
+const { Header } = Layout;
 
 export const CustomAntHeader: FC<ICustomAntHeader> = ({ user }) => {
     const history = useHistory();
@@ -24,7 +23,11 @@ export const CustomAntHeader: FC<ICustomAntHeader> = ({ user }) => {
         <Header className="site-layout-background dashboard-header">
             <h1>Portalo</h1>
             <div>User: {user}</div>
-            <div><LoginOutlined id="logout" onClick={signout} style={{ alignItems: "center" }} /></div>
+            <div>
+                <Tooltip title="Logout" color={'#36445F'} placement="bottomRight">
+                    <LoginOutlined id="logout" onClick={signout} />
+                </Tooltip>
+            </div>
         </Header>
     )
 }
