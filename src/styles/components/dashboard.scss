@@ -21,3 +21,29 @@
         margin-top: 0.1em;
     }
 }
+
+// desktop only
+main{
+    // background: red;
+    margin-left: 16px;
+    max-height: 86.5vh;
+    overflow: auto;
+}
+
+.dashboard-content{
+    // height:3000px;
+}
+
+#userInfo > section{
+    border: 1px solid lightgray;
+    padding: .75em;
+    margin-top: 2em;
+    box-shadow: 4px 6px 6px #8888888f;
+    
+}
+
+.formSubsection{
+    width: 50%;
+    padding: .5em;
+    display: inline-block;
+}

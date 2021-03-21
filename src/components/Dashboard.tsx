@@ -9,17 +9,18 @@ import { Layout, Spin } from 'antd';
 import { Auth } from 'aws-amplify';
 
 import { rolesTypes } from '../types/roles';
+import { DashboardMenuContext } from '../contexts'
+import { DashboardUsernameContext } from '../contexts'
 
 // components
-import Footer from './home/Footer';
-import { Sidebar } from './dashboard/Sidebar';
-import { DashboardContext } from '../contexts'
 import { CustomAntHeader } from './dashboard/Header';
+import { Sidebar } from './dashboard/Sidebar';
+import Footer from './home/Footer';
 
 // lazy loading content components
-const NewUser = lazy(() => import('./dashboard/user/NewUser'));
+const ManageUsers = lazy(() => import('./dashboard/user/ManageUsers'));
 const Info = lazy(() => import('./dashboard/user/Info'));
-const Vacation = lazy(() => import('./dashboard/user/Vacation'));
+const AnnualLeave = lazy(() => import('./dashboard/user/AnnualLeave'));
 const Finances = lazy(() => import('./dashboard/user/Finances'));
 const Devices = lazy(() => import('./dashboard/user/Devices'));
 
@@ -27,7 +28,7 @@ const { Content } = Layout;
 
 // the order must follow keys in sider
 const modules: any = [
-    '', <NewUser />, <Info />, <Vacation />, <Finances />, <Devices />
+    '', <ManageUsers />, <Info />, <Finances />, <AnnualLeave />, <Devices />
 ]
 
 export default function Dashboard() {
@@ -35,7 +36,8 @@ export default function Dashboard() {
     const [ username, setUsername ] = useState<string>('Loading...');
     const [ activeMenuItem, setActiveMenuItem ] = useState<string>('');
 
-    const providerValue = useMemo(() => ({ activeMenuItem, setActiveMenuItem }), [ activeMenuItem, setActiveMenuItem ])
+    const providerValueUsername = useMemo(() => ({ username, setUsername }), [ username, setUsername ])
+    const providerValueMenuItem = useMemo(() => ({ activeMenuItem, setActiveMenuItem }), [ activeMenuItem, setActiveMenuItem ])
 
     useEffect(() => {
         getUserInfo()
@@ -48,21 +50,24 @@ export default function Dashboard() {
     }
 
     return (
-        <DashboardContext.Provider value={providerValue}>
-            <Layout style={{ minHeight: '100vh' }}>
-                <Sidebar userRole={role} />
-                <Layout className="site-layout">
-                    <CustomAntHeader user={username} />
-                    <Content style={{ margin: '0 16px' }}>
-                        <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
-                            <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-                                {modules[ parseInt(activeMenuItem) ]}
-                            </div>
-                        </Suspense>
-                    </Content>
-                    <Footer />
+        <DashboardUsernameContext.Provider value={providerValueUsername}>
+            <DashboardMenuContext.Provider value={providerValueMenuItem}>
+                <Layout style={{ minHeight: '100vh' }}>
+                    <Sidebar userRole={role} />
+                    <Layout className="site-layout">
+                        <CustomAntHeader />
+                        {/* main start here -> style to css + to s tim div */}
+                        <Content>
+                            <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
+                                <div className="site-layout-background dashboard-content" style={{ padding: 24, minHeight: 360 }}>
+                                    {modules[ parseInt(activeMenuItem) ]}
+                                </div>
+                            </Suspense>
+                        </Content>
+                        <Footer />
+                    </Layout>
                 </Layout>
-            </Layout>
-        </DashboardContext.Provider>
+            </DashboardMenuContext.Provider>
+        </DashboardUsernameContext.Provider>
     );
 }
