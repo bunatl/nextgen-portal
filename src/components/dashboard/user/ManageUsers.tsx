@@ -88,7 +88,7 @@ export default function ManageUsers() {
     const setFormFields = (formData: any) => {
         form.setFieldsValue({
             name: username,
-            currentAddress: username, //formData.currentAddress
+            currentAddress: username,
             pernamentAddress: username,
             // dob: username,
             ico: username,

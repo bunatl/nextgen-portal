@@ -9,6 +9,7 @@ provider:
   runtime: nodejs14.x
   stage: dev
   region: us-west-2 # also edit aws-server/lambda/helpers/dbOperations
+  memorySize: 256
   lambdaHashingVersion: 20201221
   apiGateway:
     shouldStartNameWithService: true
