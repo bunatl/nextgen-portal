@@ -12,7 +12,7 @@ import {
     SketchOutlined
 } from '@ant-design/icons';
 
-import logo from '../../images/logo.png';
+import logo from '../../images/logo.svg';
 import { ISidebar } from '../../types/dashboard';
 import { DashboardMenuContext } from '../../contexts';
 

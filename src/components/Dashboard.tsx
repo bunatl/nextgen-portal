@@ -27,9 +27,17 @@ const Devices = lazy(() => import('./dashboard/user/Devices'));
 const { Content } = Layout;
 
 // the order must follow keys in sider
-const modules: any = [
-    '', <ManageUsers />, <Info />, <Finances />, <AnnualLeave />, <Devices />
-]
+const modules: any = new Map([
+    [ '1', <ManageUsers /> ],
+    [ '2', <Info /> ],
+    [ '3', <Finances /> ],
+    [ '4', <AnnualLeave /> ],
+    [ '5', <Devices /> ],
+    [ '6', <Devices /> ],
+    [ '7', <Devices /> ],
+    [ '8', <Devices /> ],
+    [ '9', <Devices /> ],
+])
 
 export default function Dashboard() {
     const [ role, setRole ] = useState<rolesTypes>('unset');
@@ -60,7 +68,7 @@ export default function Dashboard() {
                         <Content>
                             <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
                                 <div className="site-layout-background dashboard-content" style={{ padding: 24, minHeight: 360 }}>
-                                    {modules[ parseInt(activeMenuItem) ]}
+                                    {modules.get(activeMenuItem)}
                                 </div>
                             </Suspense>
                         </Content>
