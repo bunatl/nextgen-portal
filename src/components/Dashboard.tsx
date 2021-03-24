@@ -37,7 +37,7 @@ const modules: any = new Map([
     [ '7', <Devices /> ],
     [ '8', <Devices /> ],
     [ '9', <Devices /> ],
-])
+]);
 
 export default function Dashboard() {
     const [ role, setRole ] = useState<rolesTypes>('unset');

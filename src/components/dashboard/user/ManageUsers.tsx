@@ -1,128 +1,118 @@
-import React, { useState, useReducer, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
     Form,
     Input,
-    Cascader,
     Select,
     Row,
     Col,
     Checkbox,
+    Spin,
     Button,
     AutoComplete,
     DatePicker,
-    TimePicker,
-    InputNumber
+    Popconfirm,
+    message
 } from 'antd';
+import { SaveOutlined } from '@ant-design/icons';
 
+import moment from 'moment';
+
+import { IAllUsers } from '../../../types/dashboard'
 import { DashboardUsernameContext } from '../ ../../../../contexts';
+import { fetchUserFullInfo, fetchAllUsers, putUpdateUserData } from '../../../utils/fetches';
 
-
-const { TextArea, Search } = Input;
+const { TextArea } = Input;
 const { Option } = Select;
 
-
-// type ReducerActions =
-//     | { type: 'SETUSERNAME'; payload: string }
-//     | { type: 'SWITCHASIDE'; payload: string }
-//     | { type: 'RESET' }
-
-// type ContractType =
-//     | 'hod'
-//     | 'md'
-//     | 'fix'
-
-// interface IformData {
-//     username: string;
-//     name: string;
-//     dob: string;
-//     pernamentAddress: string;
-//     currentAddress: string;
-
-//     usedLeaveDays: string;
-
-//     ico: string;
-//     contractType: ContractType;
-//     compensation: string;
-//     bankAccount: string;
-
-//     note: string;
-// }
-
-// const formaData: IformData = {
-//     username: '',
-//     name: '',
-//     dob: '',
-//     pernamentAddress: '',
-//     currentAddress: '',
-//     usedLeaveDays: '',
-//     ico: '',
-//     contractType: 'hod',
-//     compensation: '',
-//     bankAccount: '',
-//     note: '',
-// }
-
-
-// const reducer = (state: IformData, action: ReducerActions) => {
-//     switch (action.type) {
-//         default:
-//             return state;
-//     }
-// }
-
-
 export default function ManageUsers() {
+    const TOTAL_ANNUAL_LEAVE: number = 30;
+    const DATE_FORMAT: string = "DD-MMM-YYYY";
     const [ form ] = Form.useForm();
     const [ searchLoading, setSearchLoading ] = useState<boolean>(false);
-    // const [ formValueus, dispatch ] = useReducer(reducer, formaData);
     const { username } = useContext(DashboardUsernameContext);
 
-    const fetchUserFromDb = (username: string) => {
-        try {
-            // fetch
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    const setFormFields = (formData: any) => {
-        form.setFieldsValue({
-            name: username,
-            currentAddress: username,
-            pernamentAddress: username,
-            // dob: username,
-            ico: username,
-            bankAccount: username,
-            employment: username,
-            currentAnnualLeave: username,
-            annualLeaveLeft: username,
-            notes: username,
-        })
-    }
-
-    const updateForm = (user: string, fromSearch: boolean = false) => {
-        // get user data from DynamoDB through lambda function
-        fetchUserFromDb(username);
-        // set form fields based on the result from DB
-        setFormFields('tst');
-    }
+    // known issue with getting antd addonBefore value: https://github.com/ant-design/ant-design/issues/18060
+    const [ emplType, setEmplType ] = useState<string>('hod');
+    const [ options, setOptions ] = useState<any>([]);
+    const [ allUsers, setAllUsers ] = useState<IAllUsers[]>([]);
 
     useEffect(() => {
-        updateForm(username);
+        updateForm();
+        parseAndSetAllUsers();
     }, [])
 
-    const submitForm = (e: any) => {
-        console.log(e)
-        // post values into db
+    const parseAndSetAllUsers = async () => {
+        const allUsers = await fetchAllUsers();
+        if (allUsers.data.getAllUsers) setAllUsers(allUsers.data.getAllUsers);
+    }
+
+    const populateFormFields = (userData: any) => {
+        form.setFieldsValue({
+            username: userData.username,
+            name: userData.name,
+            currentAddress: userData.currentAddress,
+            pernamentAddress: userData.pernamentAddress,
+            dob: moment(userData.dob, DATE_FORMAT),
+            startDate: moment(userData.startDate, DATE_FORMAT),
+            ico: userData.ico,
+            bankAccount: userData.bankAccount,
+            employment: userData.compensation,
+            currentAnnualLeave: userData.annualLeave,
+            totalAnnualLeave: TOTAL_ANNUAL_LEAVE.toString(),
+            annualLeaveLeft: (TOTAL_ANNUAL_LEAVE - parseInt(userData.annualLeave)).toString(),
+            notes: userData.notes,
+        })
+        setEmplType(userData.employmentType);
+    }
+
+    const updateForm = async (m_username: string = username) => {
+        // when the fetch call comming from user search
+        if (m_username !== username) setSearchLoading(true);
+        // get user data from DynamoDB through lambda function
+        const graphqlRes = await fetchUserFullInfo(m_username);
+        // if successfull, set the form fields based on the result from DB
+        if (graphqlRes.data.getUserFullInfo) populateFormFields(graphqlRes.data.getUserFullInfo);
+        // cancel loading animation in search button
+        if (m_username !== username) setSearchLoading(false);
+    }
+
+    const submitForm = () => {
+        const fields = form.getFieldsValue();
+        console.log(fields)
+        // put data into DynamoDB
+        const success = putUpdateUserData(fields);
+        success
+            ? message.success('Data were successfully updated.', 3)
+            : message.warning('An error has occurred. Please check your data and try again.', 8)
     }
 
     const contractType = (
-        <Select defaultValue="hod">
+        <Select dropdownMatchSelectWidth value={emplType} onChange={(val: string) => setEmplType(val)}>
             <Option value="hod">Hodinová mzda</Option>
             <Option value="md">MD</Option>
             <Option value="fix">Měsíční fix</Option>
         </Select>
     );
+
+    const handleSearch = (value: string) => {
+        const suggestedOptions =
+            value
+                ? allUsers.reduce((acc: any, current: IAllUsers) => {
+                    if (current.name.includes(value) || (current.username.includes(value)))
+                        acc.push({ value: current.name, label: (<div className="searchSuggestions"><span>{current.name}</span><span>{current.username}</span></div>) });
+                    return acc;
+                }, [])
+                : [];
+        setOptions(suggestedOptions)
+    };
+
+    const searchForUser = (name: string) => {
+        if (name === '') return;
+        // match username with user's name
+        const user = allUsers.find(user => user.name === name);
+        if (user) updateForm(user.username);
+    }
+
 
     return (
         <Form
@@ -130,71 +120,103 @@ export default function ManageUsers() {
             name="userInfo"
             onFinish={submitForm}
         >
-            {/* search */}
-            <Search placeholder="Search user by email" type="email" enterButton="Search" size="large" onSearch={(input: string) => updateForm(input, true)} loading={searchLoading} />
+            <div id="manageControl">
+                <Popconfirm placement="bottomLeft" title={"Are you sure to save user's info?"} onConfirm={submitForm} okText="Yes" cancelText="No">
+                    <Button type="primary" icon={<SaveOutlined />} size="large">Save changes</Button>
+                </Popconfirm>
+                <AutoComplete
+                    options={options}
+                    onSelect={searchForUser}
+                    onSearch={handleSearch}
+                >
+                    <Input.Search
+                        size="large"
+                        placeholder="Search user by email or name"
+                        allowClear
+                        onSearch={searchForUser}
+                        enterButton={"Search"}
+                        loading={searchLoading}
+                    />
+                </AutoComplete>
+            </div>
             <section>
-                <h3>Info</h3>
-                <div className={"formSubsection"}>
-                    {/* name */}
-                    <Form.Item name="name" label="Full name" >
-                        <Input placeholder="Please input your nickname" disabled />
-                    </Form.Item>
-                    {/* Pernament address */}
-                    <Form.Item name="pernamentAddress" label="Pernament address" >
-                        <Input placeholder="Please input your nickname" disabled />
-                    </Form.Item>
-                </div>
+                <Spin spinning={searchLoading} delay={500}>
+                    <h3>Info</h3>
+                    <div className={"formSubsection"}>
+                        {/* name */}
+                        <Form.Item name="name" label="Full name" >
+                            <Input placeholder="Please input your nickname" />
+                        </Form.Item>
+                        {/* dob */}
+                        <Form.Item name="dob" label="Date of birth" >
+                            <DatePicker format={DATE_FORMAT} />
+                        </Form.Item>
+                        {/* Pernament address */}
+                        <Form.Item name="pernamentAddress" label="Pernament address" >
+                            <Input placeholder="Please input your nickname" />
+                        </Form.Item>
+                    </div>
 
-                <div className={"formSubsection"}>
-                    {/* dob */}
-                    <Form.Item name="dob" label="Date of birth" >
-                        <DatePicker format="DD-MMM-YYYY" onChange={(date, dateString) => console.log(date, dateString)} />
-                    </Form.Item>
-                    {/* Current address */}
-                    <Form.Item name="currentAddress" label="Current address" >
-                        <Input disabled />
-                    </Form.Item>
-                </div>
+                    <div className={"formSubsection"}>
+                        {/* username */}
+                        <Form.Item name="username" label="Username" >
+                            <Input placeholder="Please input your nickname" />
+                        </Form.Item>
+                        {/* start date */}
+                        <Form.Item name="startDate" label="Start date" >
+                            <DatePicker format={DATE_FORMAT} />
+                        </Form.Item>
+                        {/* Current address */}
+                        <Form.Item name="currentAddress" label="Current address" >
+                            <Input />
+                        </Form.Item>
+                    </div>
+                </Spin>
             </section >
 
+            <section className='section2'>
+                <Spin spinning={searchLoading} delay={500}>
+                    <h3>Finances</h3>
+                    <Form.Item name={'ico'} label={'IČO'}>
+                        <Input placeholder="01234567" />
+                    </Form.Item>
 
-            <section style={{ width: "49%", display: "inline-block", marginRight: "2%" }}>
-                <h3>Finances</h3>
-                <Form.Item name={'ico'} label={'IČO'}>
-                    <Input placeholder="01234567" />
-                </Form.Item>
+                    <Form.Item name={'employment'} label={'Employment type'}>
+                        <Input
+                            addonBefore={contractType}
+                            addonAfter="Kč"
+                            placeholder="3300"
+                        />
+                    </Form.Item>
 
-                <Form.Item name={'employment'} label={'Employment type'}>
-                    <Input
-                        addonBefore={contractType}
-                        addonAfter="Kč"
-                        placeholder="3300"
-                    />
-                </Form.Item>
-
-                <Form.Item name={'bankAccount'} label={'Bank account'}>
-                    <Input placeholder="34568795/0300" />
-                </Form.Item>
+                    <Form.Item name={'bankAccount'} label={'Bank account'}>
+                        <Input placeholder="34568795/0300" />
+                    </Form.Item>
+                </Spin>
             </section>
-            <section style={{ width: "49%", display: "inline-block" }}>
-                <h3>Annual leave</h3>
-                <Form.Item name={'currentAnnualLeave'} label={'Used days'}>
-                    <Input addonAfter={"days"} defaultValue={"30"} />
-                </Form.Item>
-                <Form.Item name={'annualLeaveLeft'} label={'Days left'}>
-                    <Input addonAfter={"days"} defaultValue={''} />
-                </Form.Item>
-                <Form.Item label={'Total annual days'}>
-                    <Input addonAfter={"days"} defaultValue={"30"} disabled />
-                </Form.Item>
+            <section className='section3'>
+                <Spin spinning={searchLoading} delay={500}>
+                    <h3>Annual leave</h3>
+                    <Form.Item name={'currentAnnualLeave'} label={'Used days'}>
+                        <Input addonAfter={"days"} />
+                    </Form.Item>
+                    <Form.Item name={'annualLeaveLeft'} label={'Days left'}>
+                        <Input addonAfter={"days"} />
+                    </Form.Item>
+                    <Form.Item name={"totalAnnualLeave"} label={'Total annual days'}>
+                        <Input addonAfter={"days"} disabled />
+                    </Form.Item>
+                </Spin>
             </section>
 
             <section>
-                <h3>Notes</h3>
-                {/* showCount */}
-                <Form.Item name={'notes'}>
-                    <TextArea rows={4} />
-                </Form.Item>
+                <Spin spinning={searchLoading} delay={500}>
+                    <h3>Notes</h3>
+                    {/* showCount */}
+                    <Form.Item name={'notes'}>
+                        <TextArea rows={4} />
+                    </Form.Item>
+                </Spin>
             </section>
         </Form>
     )

@@ -47,3 +47,45 @@ main{
     padding: .5em;
     display: inline-block;
 }
+
+.section2, .section3{
+    width: 100%;
+    @media only screen and (min-width: 1000px) {
+        width: 49%;
+        display: inline-block;
+    }
+}
+
+.section2{
+    @media only screen and (min-width: 1000px) {
+        margin-right: 2%;
+    }
+}
+
+.searchSuggestions{
+    @include flex(row, nowrap, space-between);
+    >span{
+        &:first-child{
+            font-weight: bold;
+        }
+        &:last-child{
+            font-style: italic;
+        }
+    }
+}
+
+#manageControl{
+    @include flex(row, nowrap, space-between);
+
+    >button{
+        top: 1px;
+        width: 20%;
+        min-width: 150px;
+        max-width: 250px;
+        border-radius: .7em;
+    }
+
+    >div{
+        width: 75%;
+    }
+}

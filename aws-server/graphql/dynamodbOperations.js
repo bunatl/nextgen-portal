@@ -12,7 +12,6 @@ exports.searchUserInDb = async username => {
     };
 
     try {
-        console.log(username);
         const data = await ddb.get(params).promise();
         return data.Item;
     } catch (err) {
@@ -25,11 +24,14 @@ exports.putDataToDb = async userData => {
         TableName: 'Employees',
         Item: {
             username: userData.username,
+            name: userData.name,
             currentAddress: userData.currentAddress,
             pernamentAddress: userData.pernamentAddress,
             dob: userData.dob,
+            startDate: userData.startDate,
             ico: userData.ico,
             bankAccount: userData.bankAccount,
+            compensation: userData.compensation,
             employmentType: userData.employmentType,
             annualLeave: userData.annualLeave,
             notes: userData.notes
@@ -42,5 +44,20 @@ exports.putDataToDb = async userData => {
     } catch (err) {
         console.log("Error while writing to DB.", err);
         return false;
+    }
+};
+
+exports.scanDb = async () => {
+    const params = {
+        TableName: 'Employees',
+        // ProjectionExpression: 'username, name'
+    };
+
+    try {
+        // const data = await ddb.scan(params).promise();
+        return { Items } = await ddb.scan(params).promise();
+        // return data.Items;
+    } catch (err) {
+        return '';
     }
 };
