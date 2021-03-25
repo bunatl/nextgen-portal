@@ -40,7 +40,7 @@ export const fetchAllUsers = async (): Promise<any> => {
     }
 }
 
-export const putUpdateUserData = async (formData: any): Promise<any> => {
+export const putUpdateUserData = async (formData: any, emplType: string): Promise<any> => {
     try {
         const res = await fetch(process.env.REACT_APP_GRAPHQL_URL!, {
             method: 'POST',
@@ -48,7 +48,7 @@ export const putUpdateUserData = async (formData: any): Promise<any> => {
                 'content-type': 'application/json'
             },
             body: JSON.stringify({
-                query: getUpdateUserDataMutation(formData)
+                query: getUpdateUserDataMutation(formData, emplType)
             })
         })
         return await res.json();

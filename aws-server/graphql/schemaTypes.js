@@ -4,6 +4,7 @@ const { gql } = require('apollo-server-lambda');
 exports.typeDefs = gql`
   schema{ 
     query: Query
+    mutation: Mutation
   }
 
   type UserFullInfo{

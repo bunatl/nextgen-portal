@@ -67,7 +67,7 @@ export default function Dashboard() {
                         {/* main start here -> style to css + to s tim div */}
                         <Content>
                             <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
-                                <div className="site-layout-background dashboard-content" style={{ padding: 24, minHeight: 360 }}>
+                                <div className="site-layout-background dashboard-content">
                                     {modules.get(activeMenuItem)}
                                 </div>
                             </Suspense>

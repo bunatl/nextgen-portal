@@ -54,9 +54,8 @@ exports.scanDb = async () => {
     };
 
     try {
-        // const data = await ddb.scan(params).promise();
-        return { Items } = await ddb.scan(params).promise();
-        // return data.Items;
+        const data = await ddb.scan(params).promise();
+        return data.Items;
     } catch (err) {
         return '';
     }

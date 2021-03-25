@@ -26,20 +26,20 @@ export const getGetAllUsersQuery = () => (`
                         }
                         `);
 
-export const getUpdateUserDataMutation = (formData: any) => (`
+export const getUpdateUserDataMutation = (formData: any, emplType: string) => (`
                         mutation{
                             updateUserData(userData:{
                                 username: "${formData.username}"
                                 name: "${formData.name}"
                                 currentAddress: "${formData.currentAddress}"
                                 pernamentAddress: "${formData.pernamentAddress}"
-                                dob: "${formData.dob}"
-                                startDate: "${formData.startDate}"
+                                dob: "${formData.dob.format("DD-MMM-YYYY")}"
+                                startDate: "${formData.startDate.format("DD-MMM-YYYY")}"
                                 ico: "${formData.ico}"
                                 bankAccount: "${formData.bankAccount}"
                                 compensation: "${formData.compensation}"
-                                employmentType: "${formData.employmentType}"
-                                annualLeave: "${formData.annualLeave}"
+                                employmentType: "${emplType}"
+                                annualLeave: "${formData.currentAnnualLeave}"
                                 notes: "${formData.notes}"
                                 }
                             )

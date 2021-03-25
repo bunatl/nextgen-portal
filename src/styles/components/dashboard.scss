@@ -24,22 +24,19 @@
 
 // desktop only
 main{
-    // background: red;
-    margin-left: 16px;
     max-height: 86.5vh;
     overflow: auto;
 }
 
 .dashboard-content{
-    // height:3000px;
+    padding: 1em 2em;
 }
 
 #userInfo > section{
     border: 1px solid lightgray;
-    padding: .75em;
-    margin-top: 2em;
+    padding: .6em;
+    margin-top: 1.5em;
     box-shadow: 4px 6px 6px #8888888f;
-    
 }
 
 .formSubsection{

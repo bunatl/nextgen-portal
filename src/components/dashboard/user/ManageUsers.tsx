@@ -43,7 +43,10 @@ export default function ManageUsers() {
 
     const parseAndSetAllUsers = async () => {
         const allUsers = await fetchAllUsers();
-        if (allUsers.data.getAllUsers) setAllUsers(allUsers.data.getAllUsers);
+        if (allUsers.data && allUsers.data.getAllUsers) {
+            setAllUsers(allUsers.data.getAllUsers);
+            message.info('List of users is loaded into search autocomplete.', 3)
+        }
     }
 
     const populateFormFields = (userData: any) => {
@@ -56,7 +59,7 @@ export default function ManageUsers() {
             startDate: moment(userData.startDate, DATE_FORMAT),
             ico: userData.ico,
             bankAccount: userData.bankAccount,
-            employment: userData.compensation,
+            compensation: userData.compensation,
             currentAnnualLeave: userData.annualLeave,
             totalAnnualLeave: TOTAL_ANNUAL_LEAVE.toString(),
             annualLeaveLeft: (TOTAL_ANNUAL_LEAVE - parseInt(userData.annualLeave)).toString(),
@@ -71,7 +74,12 @@ export default function ManageUsers() {
         // get user data from DynamoDB through lambda function
         const graphqlRes = await fetchUserFullInfo(m_username);
         // if successfull, set the form fields based on the result from DB
-        if (graphqlRes.data.getUserFullInfo) populateFormFields(graphqlRes.data.getUserFullInfo);
+        if (graphqlRes.data && graphqlRes.data.getUserFullInfo) {
+            const { name, username } = graphqlRes.data.getUserFullInfo;
+            populateFormFields(graphqlRes.data.getUserFullInfo);
+            message.success(`Data about ${name} (${username}) were successfully displayed.`, 4)
+        } else
+            message.warning(`While getting data an error has occurred.`, 4)
         // cancel loading animation in search button
         if (m_username !== username) setSearchLoading(false);
     }
@@ -80,10 +88,10 @@ export default function ManageUsers() {
         const fields = form.getFieldsValue();
         console.log(fields)
         // put data into DynamoDB
-        const success = putUpdateUserData(fields);
+        const success = putUpdateUserData(fields, emplType);
         success
             ? message.success('Data were successfully updated.', 3)
-            : message.warning('An error has occurred. Please check your data and try again.', 8)
+            : message.warning('An error has occurred. Please check your data and try again.', 5)
     }
 
     const contractType = (
@@ -181,7 +189,7 @@ export default function ManageUsers() {
                         <Input placeholder="01234567" />
                     </Form.Item>
 
-                    <Form.Item name={'employment'} label={'Employment type'}>
+                    <Form.Item name={'compensation'} label={'Employment type'}>
                         <Input
                             addonBefore={contractType}
                             addonAfter="Kč"
