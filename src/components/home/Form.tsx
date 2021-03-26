@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useReducer } from 'react'
 import { Menu } from 'antd';
 
 // types
@@ -11,10 +11,13 @@ import Register from './Register';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { reducer, modalStates } from '../../reducer';
+
 export default function Form() {
     const [ activeTab, setActiveTab ] = useState<activeTabType>('login');
-    const [ visibility, setVisibility ] = useState<boolean>(false);
-    const providerValue = useMemo(() => ({ visibility, setVisibility }), [ visibility, setVisibility ]);
+
+    const [ modals, dispatch ] = useReducer<any>(reducer, modalStates)
+    const providerValue = useMemo(() => ({ modals, dispatch }), [ modals, dispatch ]);
 
     const history = useHistory();
     // usehistory() must be used in sub component -> https://stackoverflow.com/a/58221867/11231064

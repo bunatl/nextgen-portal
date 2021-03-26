@@ -72,8 +72,8 @@ resources:
               RequireUppercase: false
           UsernameAttributes:
               - email
-          # AutoVerifiedAttributes: # this means it requires verification!!
-          #     - email
+          AutoVerifiedAttributes: # this means it requires verification!! the allows recover
+              - email
 
     CognitoUserPoolClient:  # client that can access the cognito user pool
       Type: AWS::Cognito::UserPoolClient

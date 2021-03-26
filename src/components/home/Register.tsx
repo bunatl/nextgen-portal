@@ -14,10 +14,11 @@ import policy from '../../utils/policy';
 import { Auth } from 'aws-amplify';
 
 import { rolesTypes } from '../../types/roles'
+import { SignUpConfirm } from './SignUpConfirm';
 
 export default function Register() {
     const [ form ] = Form.useForm();
-    const { setVisibility } = useContext(ModalContext);
+    const { dispatch } = useContext(ModalContext);
     const [ masterPsswdVisibility, setMasterPsswdVisibility ] = useState<boolean>(false);
     const [ adminAccount, setAdminAccount ] = useState<rolesTypes>('user');
 
@@ -36,7 +37,11 @@ export default function Register() {
             });
             message.success(`User ${user.getUsername()} has been created`, 3)
                 .then(() => !userConfirmed ? message.warning('Please confirm your account.', 5) : '')
+            // reset
             setAdminAccount('user');
+            // set reduder for auth modal
+            dispatch({ type: 'SETEMAIL', payload: values.email });
+            dispatch({ type: 'SETAUTH', payload: true });
             form.resetFields();
         } catch (error) {
             message.error(error.message, 10);
@@ -115,7 +120,7 @@ export default function Register() {
                 ]}
             >
                 <Checkbox>
-                    I have read the <span onClick={() => setVisibility(true)}>agreement</span>
+                    I have read the <span onClick={() => dispatch({ type: 'SETTERMS', payload: true })}>agreement</span>
                 </Checkbox>
             </Form.Item>
 
@@ -151,20 +156,21 @@ export default function Register() {
 
             <Button type="primary" htmlType="submit">Register</Button>
             <ModalBox />
+            <SignUpConfirm />
         </Form >
     );
 };
 
 export const ModalBox = () => {
-    const { visibility, setVisibility } = useContext(ModalContext);
+    const { modals, dispatch } = useContext(ModalContext);
 
     return (
         <Modal
             title="Portalo's Terms &amp; conditions"
             centered
-            visible={visibility}
-            onOk={() => setVisibility(false)}
-            onCancel={() => setVisibility(false)}
+            visible={modals.terms}
+            onOk={() => dispatch({ type: 'SETTERMS', payload: false })}
+            onCancel={() => dispatch({ type: 'SETTERMS', payload: false })}
             width={1000}
         >
             {/* https://reactjs.org/docs/dom-elements.html#dangerouslysetinnerhtml */}
