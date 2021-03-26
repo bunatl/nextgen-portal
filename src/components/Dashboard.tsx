@@ -17,6 +17,13 @@ import { CustomAntHeader } from './dashboard/Header';
 import { Sidebar } from './dashboard/Sidebar';
 import Footer from './home/Footer';
 
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+const client = new ApolloClient({
+    uri: process.env.REACT_APP_GRAPHQL_URL,
+    cache: new InMemoryCache()
+});
+
 // lazy loading content components
 const ManageUsers = lazy(() => import('./dashboard/user/ManageUsers'));
 const Info = lazy(() => import('./dashboard/user/Info'));
@@ -60,21 +67,23 @@ export default function Dashboard() {
     return (
         <DashboardUsernameContext.Provider value={providerValueUsername}>
             <DashboardMenuContext.Provider value={providerValueMenuItem}>
-                <Layout style={{ minHeight: '100vh' }}>
-                    <Sidebar userRole={role} />
-                    <Layout className="site-layout">
-                        <CustomAntHeader />
-                        {/* main start here -> style to css + to s tim div */}
-                        <Content>
-                            <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
-                                <div className="site-layout-background dashboard-content">
-                                    {modules.get(activeMenuItem)}
-                                </div>
-                            </Suspense>
-                        </Content>
-                        <Footer />
+                <ApolloProvider client={client}>
+                    <Layout style={{ minHeight: '100vh' }}>
+                        <Sidebar userRole={role} />
+                        <Layout className="site-layout">
+                            <CustomAntHeader />
+                            {/* main start here -> style to css + to s tim div */}
+                            <Content>
+                                <Suspense fallback={<Spin tip="Loading..." ></Spin>}>
+                                    <div className="site-layout-background dashboard-content">
+                                        {modules.get(activeMenuItem)}
+                                    </div>
+                                </Suspense>
+                            </Content>
+                            <Footer />
+                        </Layout>
                     </Layout>
-                </Layout>
+                </ApolloProvider>
             </DashboardMenuContext.Provider>
         </DashboardUsernameContext.Provider>
     );

@@ -1,9 +1,8 @@
 /* Set up guide available on: https://www.apollographql.com/docs/apollo-server/deployment/lambda/ */
+import { ApolloServer } from 'apollo-server-lambda';
 
-const { ApolloServer } = require('apollo-server-lambda');
-
-const { resolvers } = require('./resolvers');
-const { typeDefs } = require('./schemaTypes');
+import { resolvers } from './resolvers';
+import { typeDefs } from './schemaTypes';
 
 const server = new ApolloServer({
     typeDefs,

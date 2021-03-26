@@ -1,5 +1,8 @@
 service: portalo
 
+plugins:
+  - serverless-plugin-typescript
+
 # deplyes each function individually
 package:
   individually: true

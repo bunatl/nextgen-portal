@@ -1,7 +1,7 @@
-const { gql } = require('apollo-server-lambda');
+import { gql } from 'apollo-server-lambda';
 
 // Construct a schema, using GraphQL schema language
-exports.typeDefs = gql`
+export const typeDefs = gql`
   schema{ 
     query: Query
     mutation: Mutation

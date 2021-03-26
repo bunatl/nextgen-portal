@@ -18,8 +18,20 @@ import { IAllUsers } from '../../../types/dashboard'
 import { DashboardUsernameContext } from '../ ../../../../contexts';
 import { fetchUserFullInfo, fetchAllUsers, putUpdateUserData } from '../../../utils/fetches';
 
+
+// import { useQuery, gql } from '@apollo/client';
+
 const { TextArea } = Input;
 const { Option } = Select;
+
+// const ALL_USERS = gql`
+//     query{
+//         getAllUsers{
+//             username
+//             name
+//         }
+//     }
+// `
 
 export default function ManageUsers() {
     const TOTAL_ANNUAL_LEAVE: number = 30;
@@ -33,10 +45,17 @@ export default function ManageUsers() {
     const [ options, setOptions ] = useState<any>([]);
     const [ allUsers, setAllUsers ] = useState<IAllUsers[]>([]);
 
+    // const { loading, error, data } = useQuery(ALL_USERS);
+    // if (loading) return <p>Loading...</p>;
+    // if (error) return <p>Error :(</p>;
+
+
     useEffect(() => {
         updateForm();
         parseAndSetAllUsers();
     }, [])
+
+
 
     const parseAndSetAllUsers = async () => {
         const allUsers = await fetchAllUsers();
@@ -83,7 +102,6 @@ export default function ManageUsers() {
 
     const submitForm = () => {
         const fields = form.getFieldsValue();
-        console.log(fields)
         // put data into DynamoDB
         const success = putUpdateUserData(fields, emplType);
         success

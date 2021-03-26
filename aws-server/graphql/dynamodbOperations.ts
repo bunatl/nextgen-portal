@@ -1,13 +1,15 @@
+import { IUser } from '../types'
 // // Loads in the AWS SDK
 const AWS = require('aws-sdk');
 // Creates the document client specifing the region (N.Carolina = us-east-1)
 const ddb = new AWS.DynamoDB.DocumentClient({ region: 'us-west-2' });
 
-exports.searchUserInDb = async username => {
+// PromiseResult<AWS.DynamoDB.DocumentClient.GetItemOutput, AWS.AWSError>
+export const searchUserInDb = async (username: string): Promise<IUser | null> => {
     const params = {
         TableName: 'Employees',
         Key: {
-            'username': username
+            username
         }
     };
 
@@ -15,11 +17,12 @@ exports.searchUserInDb = async username => {
         const data = await ddb.get(params).promise();
         return data.Item;
     } catch (err) {
-        return '';
+        console.log("Error while searching DB by username.", err);
+        return null;
     }
 };
 
-exports.putDataToDb = async userData => {
+export const putDataToDb = async (userData: IUser): Promise<boolean> => {
     const params = {
         TableName: 'Employees',
         Item: {
@@ -47,16 +50,16 @@ exports.putDataToDb = async userData => {
     }
 };
 
-exports.scanDb = async () => {
+export const scanDb = async (): Promise<IUser[] | null> => {
     const params = {
         TableName: 'Employees',
-        // ProjectionExpression: 'username, name'
     };
 
     try {
         const data = await ddb.scan(params).promise();
         return data.Items;
     } catch (err) {
-        return '';
+        console.log("Error while scanning DB.", err);
+        return null;
     }
 };
