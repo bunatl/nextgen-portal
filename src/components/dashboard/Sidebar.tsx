@@ -25,11 +25,11 @@ export const Sidebar: FC<ISidebar> = ({ userRole }) => {
         <Sider collapsible > {/* collapsed={collapsed} onCollapse={this.onCollapse} */}
             <div className="logo" ><img src={logo} style={{ width: "100%" }} alt="Portalo"></img></div>
             <Menu theme="dark" defaultSelectedKeys={[ 'sub1' ]} mode="inline" onClick={e => setActiveMenuItem(e.key)}>
-                <SubMenu key="sub1" icon={<UserOutlined />} title="User">
-                    {userRole === 'admin' ? <Menu.Item key="1" icon={<SettingOutlined />}>Manage</Menu.Item> : ''}
-                    <Menu.Item key="2" icon={<InfoCircleOutlined />}>Profile Info</Menu.Item>
+                <SubMenu key="sub1" icon={<UserOutlined />} title="Human resources">
+                    {userRole === 'admin' ? <Menu.Item key="1" icon={<SettingOutlined />}>Manage HR</Menu.Item> : ''}
+                    <Menu.Item key="2" icon={<InfoCircleOutlined />}>User Info</Menu.Item>
                     <Menu.Item key="3" icon={<BarChartOutlined />}>Finances</Menu.Item>
-                    <Menu.Item key="4" icon={<CarOutlined />}>Vacation</Menu.Item>
+                    <Menu.Item key="4" icon={<CarOutlined />}>Annual Leave</Menu.Item>
                 </SubMenu>
                 <Menu.Item key="5" icon={<LaptopOutlined />}>Devices</Menu.Item>
                 <Menu.Item key="6" icon={<HomeOutlined />}>Rooms</Menu.Item>

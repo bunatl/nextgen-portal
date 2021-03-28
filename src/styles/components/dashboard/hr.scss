@@ -1,0 +1,71 @@
+
+#userInfo > section{
+    border: 1px solid lightgray;
+    padding: .6em;
+    margin-top: 1.5em;
+    box-shadow: 4px 6px 6px #8888888f;
+}
+
+.formSubsection{
+    width: 50%;
+    padding: .5em;
+    display: inline-block;
+}
+
+.section2, .section3{
+    width: 100%;
+    @media only screen and (min-width: 1000px) {
+        width: 49%;
+        display: inline-block;
+    }
+}
+
+.section2{
+    @media only screen and (min-width: 1000px) {
+        margin-right: 2%;
+    }
+}
+
+$search-break-point: 800px;
+// save chnages and search
+#manageControl{
+    @include flex(column-reverse, nowrap, center);
+    
+    @media only screen and (min-width: $search-break-point) {
+        @include flex(row, nowrap, space-between);
+    }
+
+    >button{
+        top: 1px;
+        width: 50%;
+        border-radius: .7em;
+        margin: .6em auto 0 auto;
+
+        @media only screen and (min-width: $search-break-point) {
+            width: 20%;
+            margin: 0;
+            min-width: 150px;
+            max-width: 250px;
+        }
+    }
+
+    >div{
+        width: 100%;
+        @media only screen and (min-width: $search-break-point) {
+            width: 75%;
+        }
+    }
+}
+
+// search suggestions styles
+.searchSuggestions{
+    @include flex(row, nowrap, space-between);
+    >span{
+        &:first-child{
+            font-weight: bold;
+        }
+        &:last-child{
+            font-style: italic;
+        }
+    }
+}

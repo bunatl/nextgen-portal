@@ -1,20 +1,16 @@
-#modules{    
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    justify-items: center;
-
-    row-gap: 7em;
-}
+@import './dashboard/index.scss';
 
 .dashboard-header{
     color: rgb(167, 177, 187);
     background-color: #36454F;
     @include flex(row, nowrap, space-between);
     font-size: 1.25em;
+    padding: 0 1em;
 
     h1{
         color: rgba(167, 177, 187, 0.9);
-        font-size: 1.75em;
+        font-size: 1.3em;
+
     }
 
     svg{
@@ -22,67 +18,30 @@
     }
 }
 
-// desktop only
+.dashboard-content{
+    padding: .75em 1.2em;
+}
+
 main{
+    // desktop only
     max-height: 86.5vh;
     overflow: auto;
 }
 
-.dashboard-content{
-    padding: 1em 2em;
-}
+@media only screen and (min-width: 768px) {
+    .dashboard-header{
+        font-size: 1.25em;
 
-#userInfo > section{
-    border: 1px solid lightgray;
-    padding: .6em;
-    margin-top: 1.5em;
-    box-shadow: 4px 6px 6px #8888888f;
-}
-
-.formSubsection{
-    width: 50%;
-    padding: .5em;
-    display: inline-block;
-}
-
-.section2, .section3{
-    width: 100%;
-    @media only screen and (min-width: 1000px) {
-        width: 49%;
-        display: inline-block;
-    }
-}
-
-.section2{
-    @media only screen and (min-width: 1000px) {
-        margin-right: 2%;
-    }
-}
-
-.searchSuggestions{
-    @include flex(row, nowrap, space-between);
-    >span{
-        &:first-child{
-            font-weight: bold;
+        h1{
+            font-size: 1.75em;
         }
-        &:last-child{
-            font-style: italic;
+
+        svg{
+            margin-top: 0.1em;
         }
     }
-}
 
-#manageControl{
-    @include flex(row, nowrap, space-between);
-
-    >button{
-        top: 1px;
-        width: 20%;
-        min-width: 150px;
-        max-width: 250px;
-        border-radius: .7em;
-    }
-
-    >div{
-        width: 75%;
+    .dashboard-content{
+        padding: 1em 2em;
     }
 }

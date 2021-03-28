@@ -55,8 +55,6 @@ export default function ManageUsers() {
         parseAndSetAllUsers();
     }, [])
 
-
-
     const parseAndSetAllUsers = async () => {
         const allUsers = await fetchAllUsers();
         if (allUsers.data && allUsers.data.getAllUsers) {
@@ -121,7 +119,7 @@ export default function ManageUsers() {
         const suggestedOptions =
             value
                 ? allUsers.reduce((acc: any, current: IAllUsers) => {
-                    if (current.name.includes(value) || (current.username.includes(value)))
+                    if (current.name.toLowerCase().includes(value.toLowerCase()) || (current.username.toLowerCase().includes(value.toLowerCase())))
                         acc.push({ value: current.name, label: (<div className="searchSuggestions"><span>{current.name}</span><span>{current.username}</span></div>) });
                     return acc;
                 }, [])
