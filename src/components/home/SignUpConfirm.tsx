@@ -28,7 +28,7 @@ export const SignUpConfirm = () => {
 
     return (
         <Modal
-            title="Confirm your account"
+            title="Confirm your account with code from your email"
             visible={modals.auth}
             onCancel={handleCancel}
             confirmLoading={confirmLoading}
@@ -37,7 +37,7 @@ export const SignUpConfirm = () => {
                 <Button key="submit" type="primary" loading={confirmLoading} onClick={auth}>Send</Button>
             ]}
         >
-            <Input addonBefore="Received auth code" value={confirmCode} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmCode(e.target.value)} />
+            <Input addonBefore="Confirmation code" value={confirmCode} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmCode(e.target.value)} />
         </Modal>
     )
 }

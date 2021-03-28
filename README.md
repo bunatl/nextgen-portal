@@ -8,13 +8,25 @@ Currently, only the human resources module is implemented. It retrieves and upda
 Since the backend is hosted on AWS whole application follows pay as you consume model.
 
 ### Live demo
-Porject is available on: [portalo.bunat.cz](htttps://portalo.bunat.cz/)
+This project is available on: [portalo.bunat.cz](https://portalo.bunat.cz/) using [Vercel](https://vercel.com) and [AWS](https://aws.amazon.com/) hosting & services.
 
 ### Context
 *The project was created as part of the diploma thesis.*
 
 ### Author
 [Lukas Bunat](https://bunat.cz)
+
+## Usage
+The application has a separate database (Cognito user pool) for login and the second one (DynamoDB) for info about users. Therefore, first register admin user that can create and edit other users' info. Admin should always create and fill users' info in the HR module and then let register user him/herself with the desired email. Cognito user pool and DynamoDB user bases are connected via username that is in email form.
+### Login/register
+1. On the register tab register user new
+2. Confirm user in popup modal with confirmation code that is sent to the registration email
+3. Login with registered username (email) and password
+
+### Human resources module
+1. `Manage HR` is shown only to admin users. This submodule allows to search users in DynamoDB with autocomplete feature. The user's info is then displayed and can be edited and saved. If a new username is added, the new user will be created in the DB.
+2. Submodules `User info`, `Finances`, `Annual Leave` only display retrieved information from DynamoDB about currently logged-in user.
+
 
 ## Technology stack
 * [JavaScript](https://www.javascript.com/) - JavaScript is the world's most popular and easy to learn programming language of the Web
@@ -37,6 +49,7 @@ Porject is available on: [portalo.bunat.cz](htttps://portalo.bunat.cz/)
 * [AWS Amplify](https://aws.amazon.com/amplify/) - Fastest, easiest way to build mobile and web apps that scale
 * [GraphQL](https://graphql.org/) - query language for API
 * [apollo-server-lambda](https://www.apollographql.com/docs/apollo-server/v1/servers/lambda/) - Apollo Server for AWS Lambda
+* [serverless framework](https://www.serverless.com/) - Easy YAML + CLI development and deployment to AWS, Azure, Google Cloud, Knative & more
 
 ## Installation
 #### Frontend

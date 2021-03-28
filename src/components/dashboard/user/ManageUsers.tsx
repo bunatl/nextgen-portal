@@ -1,4 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import {
+    useState,
+    useEffect,
+    useContext
+} from 'react';
 import {
     Form,
     Input,
@@ -133,7 +137,6 @@ export default function ManageUsers() {
         const user = allUsers.find(user => user.name === name);
         if (user) updateForm(user.username);
     }
-
 
     return (
         <Form

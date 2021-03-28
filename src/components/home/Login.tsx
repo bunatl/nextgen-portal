@@ -1,7 +1,12 @@
-import { Form, Input, Button, Checkbox, message } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useHistory } from "react-router-dom";
-
+import {
+    Form,
+    Input,
+    Button,
+    Checkbox,
+    message
+} from 'antd';
+import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { Auth } from 'aws-amplify';
 
 export default function Login() {

@@ -8,13 +8,11 @@ import {
     message
 } from 'antd';
 
-import { ModalContext } from '../../contexts';
-import policy from '../../utils/policy';
-
 import { Auth } from 'aws-amplify';
-
-import { rolesTypes } from '../../types/roles'
 import { SignUpConfirm } from './SignUpConfirm';
+import { ModalContext } from '../../contexts';
+import { rolesTypes } from '../../types/roles'
+import policy from '../../utils/policy';
 
 export default function Register() {
     const [ form ] = Form.useForm();
