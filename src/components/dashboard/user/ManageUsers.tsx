@@ -53,11 +53,16 @@ export default function ManageUsers() {
     // if (loading) return <p>Loading...</p>;
     // if (error) return <p>Error :(</p>;
 
-
+    // run only the first time ~ componentDidMount 
     useEffect(() => {
-        updateForm();
         parseAndSetAllUsers();
     }, [])
+
+    // run on componentDidMount and componentDidUpdate
+    // https://stackoverflow.com/questions/58579426/in-useeffect-whats-the-difference-between-providing-no-dependency-array-and-an
+    useEffect(() => {
+        updateForm();
+    })
 
     const parseAndSetAllUsers = async () => {
         const allUsers = await fetchAllUsers();
