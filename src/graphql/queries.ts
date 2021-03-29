@@ -1,47 +1,68 @@
-export const getUserFullInfoQuery = (username: string): string => (`
-                        query{
-                            getUserFullInfo(username: "${username}"){
-                                username,
-                                name,
-                                compensation,
-                                currentAddress,
-                                pernamentAddress,
-                                dob,
-                                startDate,
-                                ico,
-                                bankAccount,
-                                annualLeave,
-                                employmentType,
-                                notes
-                            }
-                        }
-                    `);
+import { gql } from '@apollo/client';
 
-export const getGetAllUsersQuery = () => (`
-                        query{
-                            getAllUsers{
-                                username
-                                name
-                            }
-                        }
-                        `);
+export const ALL_USERS_QUERY = gql`
+    query{
+        getAllUsers{
+            username
+            name
+        }
+    }
+`;
 
-export const getUpdateUserDataMutation = (formData: any, emplType: string) => (`
-                        mutation{
-                            updateUserData(userData:{
-                                username: "${formData.username}"
-                                name: "${formData.name}"
-                                currentAddress: "${formData.currentAddress}"
-                                pernamentAddress: "${formData.pernamentAddress}"
-                                dob: "${formData.dob.format("DD-MMM-YYYY")}"
-                                startDate: "${formData.startDate.format("DD-MMM-YYYY")}"
-                                ico: "${formData.ico}"
-                                bankAccount: "${formData.bankAccount}"
-                                compensation: "${formData.compensation}"
-                                employmentType: "${emplType}"
-                                annualLeave: "${formData.currentAnnualLeave}"
-                                notes: "${formData.notes}"
-                                }
-                            )
-                        }
-                    `)
+export const GET_USER_FULL_INFO = gql`
+    query($username: String!){
+        getUserFullInfo(username: $username){
+            username
+            name
+            currentAddress
+            pernamentAddress
+            dob
+            startDate
+            ico
+            bankAccount
+            compensation
+            employmentType
+            annualLeave
+            notes
+        }
+    }
+`;
+
+export const UPDATE_USER_DATA = gql`
+        mutation($userData: UserFullInfoInput!) {
+            updateUserData(userData: $userData)
+    }
+`;
+
+export const GET_USER_INFO = gql`
+    query($username: String!){
+        getUserFullInfo(username: $username){
+            username
+            name
+            currentAddress
+            pernamentAddress
+            dob
+            startDate
+            notes
+        }
+    }
+`;
+
+export const GET_VACATION_INFO = gql`
+    query($username: String!){
+        getUserFullInfo(username: $username){
+            annualLeave
+        }
+    }
+`;
+
+export const GET_FINANCIAL_INFO = gql`
+    query($username: String!){
+        getUserFullInfo(username: $username){
+            ico
+            bankAccount
+            compensation
+            employmentType
+        }
+    }
+`;

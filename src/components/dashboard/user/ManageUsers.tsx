@@ -1,16 +1,9 @@
-import {
-    useState,
-    useEffect,
-    useContext
-} from 'react';
+import { useState, useEffect } from 'react';
 import {
     Form,
     Input,
-    Select,
-    Spin,
     Button,
     AutoComplete,
-    DatePicker,
     Popconfirm,
     message
 } from 'antd';
@@ -18,130 +11,88 @@ import { SaveOutlined } from '@ant-design/icons';
 
 import moment from 'moment';
 
-import { IAllUsers } from '../../../types/dashboard'
-import { DashboardUsernameContext } from '../ ../../../../contexts';
-import { fetchUserFullInfo, fetchAllUsers, putUpdateUserData } from '../../../utils/fetches';
+import { IAllUsers } from '../../../types/dashboard';
+import { DATE_FORMAT, TOTAL_ANNUAL_LEAVE } from '../../../utils/constants'
 
+import { InfoSection } from './formSections/Info'
+import { FinancesSection, AnnualLeaveSection } from './formSections/MiddleRow'
+import { NotesSection } from './formSections/Notes'
 
-// import { useQuery, gql } from '@apollo/client';
-
-const { TextArea } = Input;
-const { Option } = Select;
-
-// const ALL_USERS = gql`
-//     query{
-//         getAllUsers{
-//             username
-//             name
-//         }
-//     }
-// `
+import {
+    UPDATE_USER_DATA,
+    GET_USER_FULL_INFO,
+    ALL_USERS_QUERY
+} from '../../../graphql/queries';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 
 export default function ManageUsers() {
-    const TOTAL_ANNUAL_LEAVE: number = 30;
-    const DATE_FORMAT: string = "DD-MMM-YYYY";
     const [ form ] = Form.useForm();
-    const [ searchLoading, setSearchLoading ] = useState<boolean>(false);
-    const { username } = useContext(DashboardUsernameContext);
-
-    // known issue with getting antd addonBefore value: https://github.com/ant-design/ant-design/issues/18060
-    const [ emplType, setEmplType ] = useState<string>('hod');
     const [ options, setOptions ] = useState<any>([]);
-    const [ allUsers, setAllUsers ] = useState<IAllUsers[]>([]);
+    // graphql queries
+    const { data, loading: allUserLoading } = useQuery(ALL_USERS_QUERY);
+    const [ updateData, { error: err } ] = useMutation(UPDATE_USER_DATA);
+    const [ getUserInfo, { data: userInfoData, loading, error } ] = useLazyQuery(GET_USER_FULL_INFO);
 
-    // const { loading, error, data } = useQuery(ALL_USERS);
-    // if (loading) return <p>Loading...</p>;
-    // if (error) return <p>Error :(</p>;
-
-    // run only the first time ~ componentDidMount 
     useEffect(() => {
-        parseAndSetAllUsers();
-    }, [])
+        if (error) message.warning(`While getting data an error has occurred.`, 4)
+        if (!loading && userInfoData)
+            form.setFieldsValue({
+                username: userInfoData.getUserFullInfo.username,
+                name: userInfoData.getUserFullInfo.name,
+                currentAddress: userInfoData.getUserFullInfo.currentAddress,
+                pernamentAddress: userInfoData.getUserFullInfo.pernamentAddress,
+                dob: moment(userInfoData.getUserFullInfo.dob, DATE_FORMAT),
+                startDate: moment(userInfoData.getUserFullInfo.startDate, DATE_FORMAT),
+                ico: userInfoData.getUserFullInfo.ico,
+                bankAccount: userInfoData.getUserFullInfo.bankAccount,
+                compensation: userInfoData.getUserFullInfo.compensation,
+                emplType: userInfoData.getUserFullInfo.employmentType,
+                currentAnnualLeave: userInfoData.getUserFullInfo.annualLeave,
+                totalAnnualLeave: TOTAL_ANNUAL_LEAVE.toString(),
+                annualLeaveLeft: (TOTAL_ANNUAL_LEAVE - parseInt(userInfoData.getUserFullInfo.annualLeave)).toString(),
+                notes: userInfoData.getUserFullInfo.notes
+            });
+    }, [ userInfoData, loading, error, form ])
 
-    // run on componentDidMount and componentDidUpdate
-    // https://stackoverflow.com/questions/58579426/in-useeffect-whats-the-difference-between-providing-no-dependency-array-and-an
-    useEffect(() => {
-        updateForm();
-    })
-
-    const parseAndSetAllUsers = async () => {
-        const allUsers = await fetchAllUsers();
-        if (allUsers.data && allUsers.data.getAllUsers) {
-            setAllUsers(allUsers.data.getAllUsers);
-            message.info('List of users is loaded into search autocomplete.', 3)
-        }
-    }
-
-    const populateFormFields = (userData: any) => {
-        form.setFieldsValue({
-            username: userData.username,
-            name: userData.name,
-            currentAddress: userData.currentAddress,
-            pernamentAddress: userData.pernamentAddress,
-            dob: moment(userData.dob, DATE_FORMAT),
-            startDate: moment(userData.startDate, DATE_FORMAT),
-            ico: userData.ico,
-            bankAccount: userData.bankAccount,
-            compensation: userData.compensation,
-            currentAnnualLeave: userData.annualLeave,
-            totalAnnualLeave: TOTAL_ANNUAL_LEAVE.toString(),
-            annualLeaveLeft: (TOTAL_ANNUAL_LEAVE - parseInt(userData.annualLeave)).toString(),
-            notes: userData.notes,
-        })
-        setEmplType(userData.employmentType);
-    }
-
-    const updateForm = async (m_username: string = username) => {
-        // when the fetch call comming from user search
-        if (m_username !== username) setSearchLoading(true);
-        // get user data from DynamoDB through lambda function
-        const graphqlRes = await fetchUserFullInfo(m_username);
-        // if successfull, set the form fields based on the result from DB
-        if (graphqlRes.data && graphqlRes.data.getUserFullInfo) {
-            const { name, username } = graphqlRes.data.getUserFullInfo;
-            populateFormFields(graphqlRes.data.getUserFullInfo);
-            message.success(`Data about ${name} (${username}) were successfully displayed.`, 4)
-        } else
-            message.warning(`While getting data an error has occurred.`, 4)
-        // cancel loading animation in search button
-        if (m_username !== username) setSearchLoading(false);
-    }
+    const updateForm = async (name: string) => {
+        if (name === '') return;
+        const user = data.getAllUsers.find((user: IAllUsers) => user.name === name);
+        getUserInfo({ variables: { username: user.username } });
+    };
 
     const submitForm = () => {
         const fields = form.getFieldsValue();
-        // put data into DynamoDB
-        const success = putUpdateUserData(fields, emplType);
-        success
-            ? message.success('Data were successfully updated.', 3)
-            : message.warning('An error has occurred. Please check your data and try again.', 5)
+        updateData({
+            variables: {
+                userData: {
+                    username: fields.username ? fields.username : '',
+                    name: fields.name ? fields.name : '',
+                    currentAddress: fields.currentAddress ? fields.currentAddress : '',
+                    pernamentAddress: fields.pernamentAddress ? fields.pernamentAddress : '',
+                    dob: fields.dob ? fields.dob.format(DATE_FORMAT) : "01-Jan-2000",
+                    startDate: fields.startDate ? fields.startDate.format(DATE_FORMAT) : "01-Jan-2000",
+                    ico: fields.ico ? fields.ico : '',
+                    bankAccount: fields.bankAccount ? fields.bankAccount : '',
+                    compensation: fields.compensation ? fields.compensation : '',
+                    employmentType: fields.emplType ? fields.emplType : '',
+                    annualLeave: fields.currentAnnualLeave ? fields.currentAnnualLeave : '',
+                    notes: fields.notes ? fields.notes : ''
+                }
+            }
+        });
+        if (err) message.warning('An error has occurred. Please check your data and try again.', 5);
+        message.success('Data were successfully updated.', 3);
     }
-
-    const contractType = (
-        <Select dropdownMatchSelectWidth value={emplType} onChange={(val: string) => setEmplType(val)}>
-            <Option value="hod">Hodinová mzda</Option>
-            <Option value="md">MD</Option>
-            <Option value="fix">Měsíční fix</Option>
-        </Select>
-    );
 
     const handleSearch = (value: string) => {
-        const suggestedOptions =
-            value
-                ? allUsers.reduce((acc: any, current: IAllUsers) => {
-                    if (current.name.toLowerCase().includes(value.toLowerCase()) || (current.username.toLowerCase().includes(value.toLowerCase())))
-                        acc.push({ value: current.name, label: (<div className="searchSuggestions"><span>{current.name}</span><span>{current.username}</span></div>) });
-                    return acc;
-                }, [])
-                : [];
-        setOptions(suggestedOptions)
+        // if all user havent been fetched no autocomplete options
+        if (allUserLoading) return;
+        setOptions(data.getAllUsers.reduce((acc: any, current: IAllUsers) => {
+            if (current.name.toLowerCase().includes(value.toLowerCase()) || (current.username.toLowerCase().includes(value.toLowerCase())))
+                acc.push({ value: current.name, label: (<div className="searchSuggestions"><span>{current.name}</span><span>{current.username}</span></div>) });
+            return acc;
+        }, []))
     };
-
-    const searchForUser = (name: string) => {
-        if (name === '') return;
-        // match username with user's name
-        const user = allUsers.find(user => user.name === name);
-        if (user) updateForm(user.username);
-    }
 
     return (
         <Form
@@ -155,98 +106,23 @@ export default function ManageUsers() {
                 </Popconfirm>
                 <AutoComplete
                     options={options}
-                    onSelect={searchForUser}
+                    onSelect={updateForm}
                     onSearch={handleSearch}
                 >
                     <Input.Search
                         size="large"
                         placeholder="Search user by email or name"
                         allowClear
-                        onSearch={searchForUser}
+                        onSearch={updateForm}
                         enterButton={"Search"}
-                        loading={searchLoading}
+                        loading={loading}
                     />
                 </AutoComplete>
             </div>
-            <section>
-                <Spin spinning={searchLoading} delay={500}>
-                    <h3>Info</h3>
-                    <div className={"formSubsection"}>
-                        {/* name */}
-                        <Form.Item name="name" label="Full name" >
-                            <Input placeholder="Please input your nickname" />
-                        </Form.Item>
-                        {/* dob */}
-                        <Form.Item name="dob" label="Date of birth" >
-                            <DatePicker format={DATE_FORMAT} />
-                        </Form.Item>
-                        {/* Pernament address */}
-                        <Form.Item name="pernamentAddress" label="Pernament address" >
-                            <Input placeholder="Please input your nickname" />
-                        </Form.Item>
-                    </div>
-
-                    <div className={"formSubsection"}>
-                        {/* username */}
-                        <Form.Item name="username" label="Username" >
-                            <Input placeholder="Please input your nickname" />
-                        </Form.Item>
-                        {/* start date */}
-                        <Form.Item name="startDate" label="Start date" >
-                            <DatePicker format={DATE_FORMAT} />
-                        </Form.Item>
-                        {/* Current address */}
-                        <Form.Item name="currentAddress" label="Current address" >
-                            <Input />
-                        </Form.Item>
-                    </div>
-                </Spin>
-            </section >
-
-            <section className='section2'>
-                <Spin spinning={searchLoading} delay={500}>
-                    <h3>Finances</h3>
-                    <Form.Item name={'ico'} label={'IČO'}>
-                        <Input placeholder="01234567" />
-                    </Form.Item>
-
-                    <Form.Item name={'compensation'} label={'Employment type'}>
-                        <Input
-                            addonBefore={contractType}
-                            addonAfter="Kč"
-                            placeholder="3300"
-                        />
-                    </Form.Item>
-
-                    <Form.Item name={'bankAccount'} label={'Bank account'}>
-                        <Input placeholder="34568795/0300" />
-                    </Form.Item>
-                </Spin>
-            </section>
-            <section className='section3'>
-                <Spin spinning={searchLoading} delay={500}>
-                    <h3>Annual leave</h3>
-                    <Form.Item name={'currentAnnualLeave'} label={'Used days'}>
-                        <Input addonAfter={"days"} />
-                    </Form.Item>
-                    <Form.Item name={'annualLeaveLeft'} label={'Days left'}>
-                        <Input addonAfter={"days"} />
-                    </Form.Item>
-                    <Form.Item name={"totalAnnualLeave"} label={'Total annual days'}>
-                        <Input addonAfter={"days"} disabled />
-                    </Form.Item>
-                </Spin>
-            </section>
-
-            <section>
-                <Spin spinning={searchLoading} delay={500}>
-                    <h3>Notes</h3>
-                    {/* showCount */}
-                    <Form.Item name={'notes'}>
-                        <TextArea rows={4} />
-                    </Form.Item>
-                </Spin>
-            </section>
+            <InfoSection dataLoading={loading} />
+            <FinancesSection dataLoading={loading} />
+            <AnnualLeaveSection dataLoading={loading} />
+            <NotesSection dataLoading={loading} />
         </Form>
     )
 }

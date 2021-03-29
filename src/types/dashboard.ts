@@ -8,3 +8,7 @@ export interface IAllUsers {
     name: string;
     username: string
 }
+
+export interface IFormSection {
+    dataLoading: boolean;
+}

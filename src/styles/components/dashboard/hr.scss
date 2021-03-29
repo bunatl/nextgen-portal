@@ -24,6 +24,10 @@
     @media only screen and (min-width: 1000px) {
         margin-right: 2%;
     }
+    // since two fromtems are wrap with 3rd one, one margin had to be removed
+    .ant-row:nth-child(3){
+        margin-bottom: 0;
+    }
 }
 
 $search-break-point: 800px;
@@ -67,5 +71,16 @@ $search-break-point: 800px;
         &:last-child{
             font-style: italic;
         }
+    }
+}
+
+#userInfoForm,
+#userFinancialForm,
+#userAnnualLeaveForm{
+    max-width: 600px;
+    margin: 2em auto;
+
+    >button{
+        border-radius: .4em;
     }
 }
