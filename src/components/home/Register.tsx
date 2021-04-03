@@ -35,7 +35,7 @@ export default function Register() {
             });
             message.success(`User ${user.getUsername()} has been created`, 3)
                 .then(() => !userConfirmed ? message.warning('Please confirm your account.', 5) : '')
-            // reset
+            // reset account type
             setAdminAccount('user');
             // set reduder for auth modal
             dispatch({ type: 'SETEMAIL', payload: values.email });
@@ -74,10 +74,16 @@ export default function Register() {
                 name="password"
                 label="Password"
                 rules={[
-                    {
-                        required: true,
-                        message: 'Please input your password!',
-                    },
+                    { required: true, message: 'Please input your password!', },
+                    { min: 6, message: 'Password lenght must be at least 6 characters long', },
+                    ({ getFieldValue }) => ({
+                        validator(_, value) {
+                            if (/\d+/g.test(value))
+                                return Promise.resolve();
+
+                            return Promise.reject('Password must contain at least one digit!');
+                        },
+                    }),
                 ]}
                 hasFeedback
             >
@@ -151,8 +157,8 @@ export default function Register() {
                 <Input.Password autoComplete="master-password" />
             </Form.Item>
                 : ''}
-
-            <Button type="primary" htmlType="submit">Register</Button>
+            <Button type="primary" htmlType="submit">Register</Button><br />
+            Do you need confirm your account? <a href="#!" onClick={() => dispatch({ type: 'SETAUTH', payload: true })}><b>Click here.</b></a>
             <ModalBox />
             <SignUpConfirm />
         </Form >

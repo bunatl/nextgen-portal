@@ -14,8 +14,8 @@ export default function Login() {
     const onFinish = async (values: any) => {
         try {
             const user = await Auth.signIn(values.email, values.password);
-            // to keep user logged
-            localStorage.setItem("user", user.username);
+            // to keep user logged based on user tick action
+            if (values.remember) localStorage.setItem("user", user.username);
             message.success("You have been signed in successfully", 5);
             history.push("/dashboard");
         } catch (error) {
