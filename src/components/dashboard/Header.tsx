@@ -26,7 +26,7 @@ export const CustomAntHeader = () => {
             <div>User: {username}</div>
             <div>
                 <Tooltip title="Logout" color={'#36445F'} placement="bottomRight">
-                    <LoginOutlined id="logout" onClick={signout} />
+                    <LoginOutlined id="logout" data-testid="logoutSvg" onClick={signout} />
                 </Tooltip>
             </div>
         </Header>
