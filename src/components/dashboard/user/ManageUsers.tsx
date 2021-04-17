@@ -56,8 +56,14 @@ export default function ManageUsers() {
 
     const updateForm = async (name: string) => {
         if (name === '') return;
-        const user = data.getAllUsers.find((user: IAllUsers) => user.name === name);
-        getUserInfo({ variables: { username: user.username } });
+        let searchedUsername = '';
+        // check if incoming name is a username(email)
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(name)) searchedUsername = name;
+        else {
+            const user = data.getAllUsers.find((user: IAllUsers) => user.name === name);
+            searchedUsername = user.username;
+        }
+        getUserInfo({ variables: { username: searchedUsername } });
     };
 
     const submitForm = () => {

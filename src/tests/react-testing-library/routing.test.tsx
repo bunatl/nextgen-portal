@@ -9,15 +9,17 @@ import {
 import { createMemoryHistory } from 'history'
 
 // the components to test
-import Form from '../components/home/Form';
-import Dashboard from '../components/Dashboard';
-import PrivateRoute from '../components/PrivateRoute';
-import Footer from '../components/home/Footer';
-import NotFound from '../components/results/NotFound';
+import Form from '../../components/home/Form';
+import Dashboard from '../../components/Dashboard';
+import PrivateRoute from '../../components/PrivateRoute';
+import Footer from '../../components/home/Footer';
+import NotFound from '../../components/results/NotFound';
 
 import { TEST_USERNAME } from './testData';
-import config from "../aws-exports";
+import config from "../../aws-exports";
 import Amplify from "aws-amplify";
+
+import '@testing-library/jest-dom/extend-expect'
 
 afterEach(cleanup);
 
