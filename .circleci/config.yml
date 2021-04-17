@@ -1,0 +1,17 @@
+version: 2.1
+# Define the jobs we want to run for this project
+jobs:
+  install:
+    docker:
+      - image: circleci/node:12.17.0
+    steps:
+      - chekcout
+      - run: yarn install
+
+# Orchestrate our job run sequence
+workflows:
+  build_and_test:
+    jobs:
+      - install
+      - run: yarn cypress run
+      - run: yarn test -- src/tests/react-testing-library/routing.test.tsx
