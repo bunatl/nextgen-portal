@@ -5,7 +5,7 @@ jobs:
     docker:
       - image: circleci/node:12.17.0
     steps:
-      - chekcout
+      - checkout
       - run: yarn install
 
 # Orchestrate our job run sequence
