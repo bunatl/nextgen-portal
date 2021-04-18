@@ -6,7 +6,7 @@ workflows:
   build:
     jobs:
       - cypress/install:
-          build: 'yarn run build' # run a custom app build step
+          build: 'npm run build' # run a custom app build step
       - cypress/run:
           requires:
             - cypress/install
@@ -14,7 +14,7 @@ workflows:
           parallel: true # split all specs across machines
           parallelism: 4 # use 4 CircleCI machines to finish quickly
           group: 'all tests' # name this group "all tests" on the dashboard
-          start: 'yarn startOnPort3000Linux' # start server before running tests
+          start: 'npm startOnPort3000Linux' # start server before running tests
 
 # version: 2.1
 # # Define the jobs we want to run for this project
