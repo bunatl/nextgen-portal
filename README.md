@@ -31,6 +31,9 @@ The application has a separate database (Cognito user pool) for login and the se
 ## Technology stack
 * [JavaScript](https://www.javascript.com/) - JavaScript is the world's most popular and easy to learn programming language of the Web
 * [TypeScript](https://www.typescriptlang.org/) - typed superset of JavaScript
+* [CircleCI](https://circleci.com/about/) - Our CI/CD platform lets teams build and deliver great software, quickly and at scale, in the cloud, or on your own infrastructure.
+
+
 
 #### Frontend
 * [react.js](https://reactjs.org/) - A JS lib for building user interfaces
@@ -51,6 +54,10 @@ The application has a separate database (Cognito user pool) for login and the se
 * [apollo-server-lambda](https://www.apollographql.com/docs/apollo-server/v1/servers/lambda/) - Apollo Server for AWS Lambda
 * [serverless framework](https://www.serverless.com/) - Easy YAML + CLI development and deployment to AWS, Azure, Google Cloud, Knative & more
 
+#### Testing
+* [Cypress](https://docs.cypress.io/guides/overview/why-cypress) - Cypress is a next generation front end testing tool built for the modern web
+* [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - React Testing Library builds on top of DOM Testing Library by adding APIs for working with React components.
+
 ## Installation
 #### Frontend
  * To start frontend: `yarn start`
@@ -63,6 +70,11 @@ The application has a separate database (Cognito user pool) for login and the se
 #### Backend
  1. Install serverless framework `npm install -g serverless`
  2. Navigate to `/aws-server/` and run `serverless deploy`
+
+ #### Tests
+ * To run headless e2e (Cypress) tests: `yarn cypress run`
+ * To run GUI e2e (Cypress) tests: `yarn run cypress open`
+ * To run integration routing (react*testing-library) tests: `yarn run test`
 
 ## Licence
 GNU GENERAL PUBLIC LICENSE
