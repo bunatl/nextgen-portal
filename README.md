@@ -5,7 +5,7 @@ Portalo is an online web application that centralized your company's internal we
 
 Currently, only the human resources module is implemented. It retrieves and updates data stored in AWS DynamoDB through AWS Lambda function. Data are searched via the user's username in a search form that autocompletes/suggests user name/username.
 
-Since the backend is hosted on AWS whole application follows pay as you consume model.
+Since the backend is hosted on AWS whole application follows pay-as-you-use model.
 
 ### Live demo
 This project is available on: [portalo.bunat.cz](https://portalo.bunat.cz/) using [Vercel](https://vercel.com) and [AWS](https://aws.amazon.com/) hosting & services.
@@ -32,8 +32,6 @@ The application has a separate database (Cognito user pool) for login and the se
 * [JavaScript](https://www.javascript.com/) - JavaScript is the world's most popular and easy to learn programming language of the Web
 * [TypeScript](https://www.typescriptlang.org/) - typed superset of JavaScript
 * [CircleCI](https://circleci.com/about/) - Our CI/CD platform lets teams build and deliver great software, quickly and at scale, in the cloud, or on your own infrastructure.
-
-
 
 #### Frontend
 * [react.js](https://reactjs.org/) - A JS lib for building user interfaces
