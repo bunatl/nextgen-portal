@@ -34,7 +34,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "startPort3000": "PORT=3000 react-scripts start",
+    "startOnPort3000Linux": "PORT=3000 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "cy": "cypress open",

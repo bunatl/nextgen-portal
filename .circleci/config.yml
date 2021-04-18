@@ -1,21 +1,39 @@
+# https://docs.cypress.io/guides/continuous-integration/introduction#CircleCI
 version: 2.1
-# Define the jobs we want to run for this project
-jobs:
+orbs:
+  cypress: cypress-io/cypress@1
+workflows:
   build:
-      # pre-built images: https://circleci.com/docs/2.0/circleci-images/
-    docker:
-      - image: circleci/node:12.10
-    steps:
-      - checkout
-      - run: 
-          name: Install all packages
-          command: yarn install
-      - run: 
-          name: Start local dev env
-          command: |
-            yarn startPort3000
-      - run: 
-          name: Run all tests
-          command: |
-            yarn cypress run
-            yarn test -- src/tests/react-testing-library/routing.test.tsx
+    jobs:
+      - cypress/install:
+          build: 'yarn run build' # run a custom app build step
+      - cypress/run:
+          requires:
+            - cypress/install
+          record: true # record results on Cypress Dashboard
+          parallel: true # split all specs across machines
+          parallelism: 4 # use 4 CircleCI machines to finish quickly
+          group: 'all tests' # name this group "all tests" on the dashboard
+          start: 'yarn startOnPort3000Linux' # start server before running tests
+
+# version: 2.1
+# # Define the jobs we want to run for this project
+# jobs:
+#   build:
+#       # pre-built images: https://circleci.com/docs/2.0/circleci-images/
+#     docker:
+#       - image: circleci/node:12.10
+#     steps:
+#       - checkout
+#       - run: 
+#           name: Install all packages
+#           command: yarn install
+#       - run: 
+#           name: Start local dev env
+#           command: |
+#             yarn startPort3000
+#       - run: 
+#           name: Run all tests
+#           command: |
+#             yarn cypress run
+#             yarn test -- src/tests/react-testing-library/routing.test.tsx
