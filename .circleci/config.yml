@@ -13,5 +13,6 @@ jobs:
       - run: 
           name: Run all tests
           command: |
+            yarn startPort3000 & wait-on http://localhost:3000
             yarn cypress run
             yarn test -- src/tests/react-testing-library/routing.test.tsx
