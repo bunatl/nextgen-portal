@@ -8,7 +8,7 @@ import {
 } from 'antd';
 import { DashboardUsernameContext } from '../../../contexts';
 import { DATE_FORMAT } from '../../../utils/constants';
-import { compareObjects } from '../../../utils/compareObjects'
+import { compareObjects, sendEmail } from '../../../utils/updateUserInfoFunctions'
 
 import { GET_USER_INFO } from '../../../graphql/queries';
 import { useQuery } from '@apollo/client';
@@ -48,8 +48,8 @@ export default function Info() {
         }
 
         const diff = compareObjects(data.getUserFullInfo, updatedData);
-        // use username var to indetify from what user it is comming from
-        if (diff.length !== 0) console.log(diff);
+        // if any diff is found construct and send email
+        if (diff.length !== 0) sendEmail(diff, data.getUserFullInfo, username);
     }
 
     return (

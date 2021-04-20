@@ -7,7 +7,7 @@ import {
     Button
 } from 'antd';
 import { DashboardUsernameContext } from '../../../contexts';
-import { compareObjects } from '../../../utils/compareObjects';
+import { compareObjects, sendEmail } from '../../../utils/updateUserInfoFunctions';
 
 import { GET_FINANCIAL_INFO } from '../../../graphql/queries';
 import { useQuery } from '@apollo/client';
@@ -31,8 +31,8 @@ export default function Finances() {
 
     const askToUpdateInfo = () => {
         const diff = compareObjects(data.getUserFullInfo, form.getFieldsValue());
-        // use username var to indetify from what user it is comming from
-        if (diff.length !== 0) console.log(diff);
+        // if any diff is found construct and send email
+        if (diff.length !== 0) sendEmail(diff, data.getUserFullInfo, username);
     }
 
     return (

@@ -6,7 +6,7 @@ import {
     Button
 } from 'antd';
 import { DashboardUsernameContext } from '../../../contexts';
-import { compareObjects } from '../../../utils/compareObjects';
+import { compareObjects, sendEmail } from '../../../utils/updateUserInfoFunctions';
 import { TOTAL_ANNUAL_LEAVE } from '../../../utils/constants';
 
 import { GET_VACATION_INFO } from '../../../graphql/queries';
@@ -28,8 +28,8 @@ export default function AnnualLeave() {
 
     const askToUpdateInfo = () => {
         const diff = compareObjects(data.getUserFullInfo, form.getFieldsValue());
-        // use username var to indetify from what user it is comming from
-        if (diff.length !== 0) console.log(diff);
+        // if any diff is found construct and send email
+        if (diff.length !== 0) sendEmail(diff, data.getUserFullInfo, username);
     }
 
     return (
