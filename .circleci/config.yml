@@ -1,29 +1,23 @@
-# https://docs.cypress.io/guides/continuous-integration/introduction#CircleCI
-# version: 2.1
-# orbs:
-#   cypress: cypress-io/cypress@1
-# workflows:
-#   build:
-#     jobs:
-#       - cypress/install:
-#           build: 'npm run build' # run a custom app build step
-#       - cypress/run:
-#           requires:
-#             - cypress/install
-#           parallel: true # split all specs across machines
-#           parallelism: 4 # use 4 CircleCI machines to finish quickly
-#           group: 'all tests' # name this group "all tests" on the dashboard
-#           start: 'npm start' # start server before running tests
+# https://circleci.com/blog/streamlined-web-application-testing-with-the-cypress-circleci-orb/
 
+# https://docs.cypress.io/guides/continuous-integration/introduction#CircleCI
 version: 2.1
 orbs:
   cypress: cypress-io/cypress@1
 workflows:
   build:
     jobs:
-      - cypress/run:
-          executor: cypress/base-12.1.0
+      - cypress/install:
+          build: 'yarn run build' # run a custom app build step
           yarn: true
+      - cypress/run:
+          requires:
+            - cypress/install
+          parallel: true # split all specs across machines
+          parallelism: 4 # use 4 CircleCI machines to finish quickly
+          yarn: true
+          group: 'all tests' # name this group "all tests" on the dashboard
+          start: 'yarn start' # start server before running tests
 
   #         jobs:
   # build:
