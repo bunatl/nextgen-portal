@@ -3,29 +3,21 @@
 # https://docs.cypress.io/guides/continuous-integration/introduction#CircleCI
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@1
+  cypress: cypress-io/cypress@1.27.0
 workflows:
-  build:
+  build: 
     jobs:
       - cypress/install:
-          build: 'yarn run build' # run a custom app build step
+          build: yarn run build # run a custom app build step
           yarn: true
       - cypress/run:
           requires:
             - cypress/install
           parallel: true # split all specs across machines
           parallelism: 4 # use 4 CircleCI machines to finish quickly
-          executor: cypress/base-12-16-1
           yarn: true
           group: 'all tests' # name this group "all tests" on the dashboard
-          start: 'yarn start' # start server before running tests
-
-  #         jobs:
-  # build:
-  #   docker:                  # executor
-  #     - image: foo:bar
-  #   steps:                   # steps
-  #     - run: echo Run some tests
+          start: yarn start # start server before running tests
 
 # version: 2.1
 # # Define the jobs we want to run for this project
