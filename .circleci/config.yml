@@ -1,34 +1,20 @@
-# # https://docs.cypress.io/guides/continuous-integration/introduction#CircleCI
-# version: 2.1
-# orbs:
-#   cypress: cypress-io/cypress@1
-# workflows:
-#   build:
-#     jobs:
-#       - cypress/install:
-#           build: 'npm run build' # run a custom app build step
-#       - cypress/run:
-#           requires:
-#             - cypress/install
-#           record: true # record results on Cypress Dashboard
-#           parallel: true # split all specs across machines
-#           parallelism: 4 # use 4 CircleCI machines to finish quickly
-#           group: 'all tests' # name this group "all tests" on the dashboard
-#           start: 'npm startOnPort3000Linux' # start server before running tests
-
-
-# to use orbs, must use version >= 2.1
+# https://docs.cypress.io/guides/continuous-integration/introduction#CircleCI
 version: 2.1
 orbs:
-  cypress: cypress-io/cypress@1.0.0
+  cypress: cypress-io/cypress@1
 workflows:
   build:
     jobs:
       - cypress/install:
-           build: "npm run build"
+          build: 'npm run build' # run a custom app build step
       - cypress/run:
-           parallel: true
-           parallelism: 10
+          requires:
+            - cypress/install
+          parallel: true # split all specs across machines
+          parallelism: 4 # use 4 CircleCI machines to finish quickly
+          group: 'all tests' # name this group "all tests" on the dashboard
+          start: 'npm start' # start server before running tests
+
 
 # version: 2.1
 # # Define the jobs we want to run for this project
