@@ -35,19 +35,6 @@ jobs:
       - run:
           name: Install Dependencies
           command: yarn install --frozen-lockfile
-      - run: pwd
-      - run: ls -l
-
-  startDev:
-    docker:
-      - image: cypress/base:12
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    working_directory: ~/portalo
-    steps:
-      - run: pwd
-      - run: ls -l
       - run: yarn start
 
   test:
@@ -68,12 +55,13 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - startDev:
-          requires:
-              - build
+      # - startDev:
+      #     requires:
+      #         - build
       - test:
           requires:
-            - startDev
+            # - startDev
+            - build
 
 
 # version: 2.1
