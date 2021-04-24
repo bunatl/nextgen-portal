@@ -56,6 +56,7 @@ workflows:
   build:
     jobs:
       - cypress/run:
+          executor: cypress/base-14-0-0
           yarn: true
           start: yarn start
           wait-on: 'http://localhost:3000'
@@ -63,7 +64,8 @@ workflows:
           post-steps:
             - run: apt-get update
             - run: apt-get install -y libgbm-dev
-            - run: yarn run test
+            - run: yarn cypress run
+            # - run: yarn run test
 
 
 # version: 2
