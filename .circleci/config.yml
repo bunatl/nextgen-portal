@@ -21,22 +21,54 @@
 
 
 
-# version: 2
-# jobs:
-#   build:
-#     docker:
-#       - image: cypress/base:12
-#         environment:
-#           ## this enables colors in the output
-#           TERM: xterm
-#     # working_directory: ~/app
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install Dependencies
-#           command: yarn install --frozen-lockfile
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cypress/base:12
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
+    # working_directory: ~/app
+    steps:
+      - checkout
+      - run:
+          name: Install Dependencies
+          command: yarn install --frozen-lockfile
 
-#       - run: $(yarn bin)/cypress run
+  startDev:
+    docker:
+      - image: cypress/base:12
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
+    # working_directory: ~/app
+    steps:
+      - run: yarn start
+
+  test:
+    docker:
+      - image: cypress/base:12
+        environment:
+          ## this enables colors in the output
+          TERM: xterm
+    # working_directory: ~/app
+    steps:
+      - run: $(yarn bin)/cypress run
+
+
+workflows:
+  version: 2.1
+  build_and_test:
+    jobs:
+      - build
+      - startDev:
+          requires:
+              - build
+      - test:
+          requires:
+            # - startDev
+            - build
 
 
 # version: 2.1
@@ -63,40 +95,40 @@
 #           group: 3 machines # name this group "3 machines"
 
 
-version: 2.1
+# version: 2.1
 
-jobs:
-  build:
-    working_directory: ~/tmp
-    docker:
-      - image: 'cypress/base:12'
-        environment:
-          TERM: xterm
-    steps:
-      - checkout
-      - run: pwd
-      - run: ls
-      - run: yarn ci
-  test:
-    working_directory: ~/tmp
-    docker:
-      - image: 'cypress/base:12'
-        environment:
-          TERM: xterm
-    steps:
-      - attach_workspace:
-          at: ~/
-      - run: ls -la cypress
-      - run: ls -la cypress/integration
-      - run:
-          name: Running cypress tests
-          command: $(yarn bin)/cypress run
+# jobs:
+#   build:
+#     working_directory: ~/tmp
+#     docker:
+#       - image: 'cypress/base:12'
+#         environment:
+#           TERM: xterm
+#     steps:
+#       - checkout
+#       - run: pwd
+#       - run: ls
+#       - run: yarn ci
+#   test:
+#     working_directory: ~/tmp
+#     docker:
+#       - image: 'cypress/base:12'
+#         environment:
+#           TERM: xterm
+#     steps:
+#       - attach_workspace:
+#           at: ~/
+#       - run: ls -la cypress
+#       - run: ls -la cypress/integration
+#       - run:
+#           name: Running cypress tests
+#           command: $(yarn bin)/cypress run
 
-workflows:
-  version: 2.1
-  build_and_test:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
+# workflows:
+#   version: 2.1
+#   build_and_test:
+#     jobs:
+#       - build
+#       - test:
+#           requires:
+#             - build
