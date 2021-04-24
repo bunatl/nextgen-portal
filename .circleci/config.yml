@@ -42,7 +42,7 @@ jobs:
         environment:
           ## this enables colors in the output
           TERM: xterm
-    # working_directory: ~/app
+    working_directory: ~/
     steps:
       - run: yarn start
 
@@ -52,7 +52,7 @@ jobs:
         environment:
           ## this enables colors in the output
           TERM: xterm
-    # working_directory: ~/app
+    working_directory: ~/
     steps:
       - run: $(yarn bin)/cypress run
 
@@ -67,8 +67,8 @@ workflows:
               - build
       - test:
           requires:
-            # - startDev
-            - build
+            - startDev
+            # - build
 
 
 # version: 2.1
