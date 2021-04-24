@@ -19,71 +19,24 @@
 #           group: 'all tests' # name this group "all tests" on the dashboard
 #           start: yarn start # start server before running tests
 
-# version: 2.1
-# orbs:
-#   cypress: cypress-io/cypress@1
-#   react: thefrontside/react@0.1.0
-# workflows:
-#   push:
-#     jobs:
-#       - react/install
-#       - react/test:
-#           requires:
-#             - react/install
+
+
+# version: 2
+# jobs:
 #   build:
-#     jobs:
-#       - cypress/run:
-#           yarn: true
-#           start: yarn start
-#           wait-on: 'http://localhost:3000'
-#           no-workspace: true
+#     docker:
+#       - image: cypress/base:12
+#         environment:
+#           ## this enables colors in the output
+#           TERM: xterm
+#     # working_directory: ~/app
+#     steps:
+#       - checkout
+#       - run:
+#           name: Install Dependencies
+#           command: yarn install --frozen-lockfile
 
-
-
-#           version: 2.1
-# orbs:
-#   cypress: cypress-io/cypress@1
-# workflows:
-#   build:
-#     jobs:
-#       - cypress/run:
-#           executor: cypress/base-14
-
-# version: 2.1
-# orbs:
-#   cypress: cypress-io/cypress@1.25.0
-# workflows:
-#   build:
-#     jobs:
-#       - cypress/run:
-#           executor: cypress/base-14-0-0
-#           yarn: true
-#           start: yarn start
-#           wait-on: 'http://localhost:3000'
-#           no-workspace: true
-#           post-steps:
-#             - run: apt-get update
-#             - run: apt-get install -y libgbm-dev
-#             - run: yarn cypress run
-#             # - run: yarn run test
-
-
-version: 2
-jobs:
-  build:
-    docker:
-      - image: cypress/base:12
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    # working_directory: ~/app
-    steps:
-      - checkout
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile
-
-      - run: $(yarn bin)/cypress run
+#       - run: $(yarn bin)/cypress run
 
 
 # version: 2.1
@@ -110,24 +63,40 @@ jobs:
 #           group: 3 machines # name this group "3 machines"
 
 
-# version: 2.1
-# # Define the jobs we want to run for this project
-# jobs:
-#   build:
-#       # pre-built images: https://circleci.com/docs/2.0/circleci-images/ 
-#     docker:
-#       - image: circleci/node:12.10
-#     steps:
-#       - checkout
-#       - run: 
-#           name: Install all packages
-#           command: yarn install
-#       - run: 
-#           name: Start local dev env
-#           command: |
-#             yarn startPort3000
-#       - run: 
-#           name: Run all tests
-#           command: |
-#             yarn cypress run
-#             yarn test -- src/tests/react-testing-library/routing.test.tsx
+version: 2.1
+
+jobs:
+  build:
+    working_directory: ~/tmp
+    docker:
+      - image: 'cypress/base:12'
+        environment:
+          TERM: xterm
+    steps:
+      - checkout
+      - run: pwd
+      - run: ls
+      - run: npm ci
+  test:
+    working_directory: ~/tmp
+    docker:
+      - image: 'cypress/base:12'
+        environment:
+          TERM: xterm
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: ls -la cypress
+      - run: ls -la cypress/integration
+      - run:
+          name: Running cypress tests
+          command: $(npm bin)/cypress run
+
+workflows:
+  version: 2.1
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
