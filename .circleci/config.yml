@@ -35,6 +35,8 @@ jobs:
       - run:
           name: Install Dependencies
           command: yarn install --frozen-lockfile
+      - run: pwd
+      - run: ls -l
 
   startDev:
     docker:
@@ -44,6 +46,8 @@ jobs:
           TERM: xterm
     working_directory: ~/portalo
     steps:
+      - run: pwd
+      - run: ls -l
       - run: yarn start
 
   test:
@@ -54,6 +58,8 @@ jobs:
           TERM: xterm
     working_directory: ~/portalo
     steps:
+      - run: pwd
+      - run: ls -l
       - run: $(yarn bin)/cypress run
 
 
