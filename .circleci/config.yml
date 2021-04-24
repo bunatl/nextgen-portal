@@ -76,7 +76,7 @@ jobs:
       - checkout
       - run: pwd
       - run: ls
-      - run: npm ci
+      - run: yarn ci
   test:
     working_directory: ~/tmp
     docker:
@@ -90,7 +90,7 @@ jobs:
       - run: ls -la cypress/integration
       - run:
           name: Running cypress tests
-          command: $(npm bin)/cypress run
+          command: $(yarn bin)/cypress run
 
 workflows:
   version: 2.1
