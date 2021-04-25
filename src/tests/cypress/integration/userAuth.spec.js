@@ -136,12 +136,13 @@ describe(("HR module tests"), () => {
 
         // search for user
         cy.contains("button", "Search").click();
+        cy.wait(2500);
 
         // generate and type random user information as inputs
         // all save as aliases for future checks in other submodules
         cy.get("#userInfo", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
             // Info section
-            cy.get("section", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).within(() => {
+            cy.get("section").eq(0).within(() => {
                 // full name
                 cy.get("input").eq(0).should("exist");
                 cy.get("input").eq(0).clear();
@@ -232,6 +233,7 @@ describe(("HR module tests"), () => {
             .should('have.text', 'User Info')
             .click();
 
+        cy.wait(2500);
         cy.get("#userInfoForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
 
             // username
@@ -267,11 +269,11 @@ describe(("HR module tests"), () => {
             .should('have.text', 'Finances')
             .click();
 
+        cy.wait(2500);
         cy.get("#userFinancialForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
-            cy.wait(500);
 
             // ico
-            cy.get("input", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).should("exist");
+            cy.get("input").eq(0).should("exist");
             cy.get("input").eq(0).should("have.value", TEST_ICO_INPUT);
 
             // empl type
@@ -295,9 +297,9 @@ describe(("HR module tests"), () => {
             .should('have.text', 'Annual Leave')
             .click();
 
-        cy.get("#userAnnualLeaveForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
-            cy.wait(500);
+        cy.wait(2500);
 
+        cy.get("#userAnnualLeaveForm",).within(() => {
             // used days
             cy.get("input").eq(0).should("exist");
             cy.get("input").eq(0).should("have.value", TEST_TOTAL_USED_DAYS_INPUT);
@@ -313,9 +315,9 @@ describe(("HR module tests"), () => {
             .click();
 
         cy.get("#userInfoForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
-            cy.wait(500);
+            cy.wait(2500);
             // username
-            cy.get("input", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).should("have.value", TEST_USERNAME);
+            cy.get("input").eq(0).should("have.value", TEST_USERNAME);
 
             // change name and address and request
             // full name
