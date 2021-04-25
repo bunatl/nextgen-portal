@@ -36,9 +36,12 @@ jobs:
           name: Install Dependencies
           command: yarn install --frozen-lockfile
       - run: 
-          name: run it
-          command: yarn start
+          name: start local dev
+          command: yarn startOnPort3000Linux
           background: true
+      - run: 
+          name: wait for localhost to load
+          command: 'yarn wait-on http://localhost:3000'
       - run: $(yarn bin)/cypress run
 
   # test:
