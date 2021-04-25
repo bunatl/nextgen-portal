@@ -9,5 +9,6 @@
     "pageLoadTimeout": 60000,
     "defaultCommandTimeout": 60000,
     "requestTimeout": 60000,
-    "video": false
+    "video": false,
+    "screenshotOnRunFailure": false
 }

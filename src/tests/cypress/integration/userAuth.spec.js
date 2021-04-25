@@ -1,6 +1,6 @@
 const TEST_USERNAME = "user@test.com";
 const TEST_PASSWORD = "user123";
-const TEST_USER_NAME = "User Tes";
+const TTW_TO_LOAD_ELEMENT = 12000;
 
 const rndNumber = (min, max) => {
     min = Math.ceil(min);
@@ -121,14 +121,14 @@ describe(("HR module tests"), () => {
     it(("manage HR"), () => {
         // if Arrow Functions would have not been used, this.* syntax would work
         // select manage HR module and open it
-        cy.get('@hrModuleButton')
+        cy.get('@hrModuleButton', { "timeout": TTW_TO_LOAD_ELEMENT })
             .click()
             .contains("li", "Manage HR")
             .should('have.text', 'Manage HR')
             .click();
 
         // select search input, type test user name/email and search it
-        cy.get('input[type="search"]')
+        cy.get('input[type="search"]', { "timeout": TTW_TO_LOAD_ELEMENT })
             .eq(0)
             .should('have.attr', 'placeholder', 'Search user by email or name')
             .type(TEST_USERNAME)
@@ -139,9 +139,9 @@ describe(("HR module tests"), () => {
 
         // generate and type random user information as inputs
         // all save as aliases for future checks in other submodules
-        cy.get("#userInfo").within(() => {
+        cy.get("#userInfo", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
             // Info section
-            cy.get("section").eq(0).within(() => {
+            cy.get("section", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).within(() => {
                 // full name
                 cy.get("input").eq(0).should("exist");
                 cy.get("input").eq(0).clear();
@@ -226,17 +226,16 @@ describe(("HR module tests"), () => {
 
     it(("user info"), () => {
         // select user name module and open it
-        cy.get('@hrModuleButton')
+        cy.get('@hrModuleButton', { "timeout": TTW_TO_LOAD_ELEMENT })
             .click()
             .contains("li", "User Info")
             .should('have.text', 'User Info')
             .click();
 
-        cy.get("#userInfoForm").within(() => {
+        cy.get("#userInfoForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
 
-            cy.wait(500);
             // username
-            cy.get("input").eq(0).should("have.value", TEST_USERNAME);
+            cy.get("input", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).should("have.value", TEST_USERNAME);
 
             // full name
             cy.get("input").eq(1).should("exist");
@@ -262,17 +261,17 @@ describe(("HR module tests"), () => {
 
     it(("Finances"), () => {
         // select finances module and open it
-        cy.get('@hrModuleButton')
+        cy.get('@hrModuleButton', { "timeout": TTW_TO_LOAD_ELEMENT })
             .click()
             .contains("li", "Finances")
             .should('have.text', 'Finances')
             .click();
 
-        cy.get("#userFinancialForm").within(() => {
+        cy.get("#userFinancialForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
             cy.wait(500);
 
             // ico
-            cy.get("input").eq(0).should("exist");
+            cy.get("input", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).should("exist");
             cy.get("input").eq(0).should("have.value", TEST_ICO_INPUT);
 
             // empl type
@@ -290,13 +289,13 @@ describe(("HR module tests"), () => {
 
     it(("Annual Leave"), () => {
         // select annual leave module and open it
-        cy.get('@hrModuleButton')
+        cy.get('@hrModuleButton', { "timeout": TTW_TO_LOAD_ELEMENT })
             .click()
             .contains("li", "Annual Leave")
             .should('have.text', 'Annual Leave')
             .click();
 
-        cy.get("#userAnnualLeaveForm").within(() => {
+        cy.get("#userAnnualLeaveForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
             cy.wait(500);
 
             // used days
@@ -307,16 +306,16 @@ describe(("HR module tests"), () => {
 
     it(("Update information"), () => {
         // select user name module and open it
-        cy.get('@hrModuleButton')
+        cy.get('@hrModuleButton', { "timeout": TTW_TO_LOAD_ELEMENT })
             .click()
             .contains("li", "User Info")
             .should('have.text', 'User Info')
             .click();
 
-        cy.get("#userInfoForm").within(() => {
+        cy.get("#userInfoForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
             cy.wait(500);
             // username
-            cy.get("input").eq(0).should("have.value", TEST_USERNAME);
+            cy.get("input", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).should("have.value", TEST_USERNAME);
 
             // change name and address and request
             // full name
