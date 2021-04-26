@@ -1,19 +1,19 @@
 version: 2.1
 jobs:
-  build:
+  run_tests:
     docker:
       - image: cypress/base:12
         environment:
-          ## this enables colors in the output
+          # this enables colors in the output
           TERM: xterm
     working_directory: ~/portalo
     steps:
       - checkout
       - run:
-          name: Install Dependencies
+          name: Install project dependencies
           command: yarn install --frozen-lockfile
       - run: 
-          name: Compile and start development server
+          name: Compile and start development server on port 3000
           command: yarn startOnPort3000Linux
           background: true
       - run: 
@@ -38,54 +38,11 @@ jobs:
   #     - run: ls -l
   #     - run: $(yarn bin)/cypress run
 
-
 workflows:
   version: 2.1
   build_and_test:
     jobs:
-      - build
+      - run_tests
       # - startDev:
       #     requires:
       #         - build
-      # - test:
-      #     requires:
-      #       # - startDev
-      #       - build
-
-# version: 2.1
-
-# jobs:
-#   build:
-#     working_directory: ~/tmp
-#     docker:
-#       - image: 'cypress/base:12'
-#         environment:
-#           TERM: xterm
-#     steps:
-#       - checkout
-#       - run: pwd
-#       - run: ls
-#       - run: yarn ci
-#   test:
-#     working_directory: ~/tmp
-#     docker:
-#       - image: 'cypress/base:12'
-#         environment:
-#           TERM: xterm
-#     steps:
-#       - attach_workspace:
-#           at: ~/
-#       - run: ls -la cypress
-#       - run: ls -la cypress/integration
-#       - run:
-#           name: Running cypress tests
-#           command: $(yarn bin)/cypress run
-
-# workflows:
-#   version: 2.1
-#   build_and_test:
-#     jobs:
-#       - build
-#       - test:
-#           requires:
-#             - build

@@ -1,6 +1,7 @@
 const TEST_USERNAME = "user@test.com";
 const TEST_PASSWORD = "user123";
 const TTW_TO_LOAD_ELEMENT = 12000;
+const TEST_MONTHS = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
 
 const rndNumber = (min, max) => {
     min = Math.ceil(min);
@@ -75,10 +76,9 @@ describe(("user authentication"), () => {
 describe(("HR module tests"), () => {
     // test inputs
     const TEST_FULLNAME_INPUT = randomString(15);
-    // const TEST_DOB_INPUT = `${ rndNumber(1920, 2020) }-${ rndNumber(1, 12) }-${ rndNumber(1, 28) }`;
-    // const TEST_DOB_INPUT = `${ rndNumber(1, 25) }-Jan-${ rndNumber(1995, 2015) }`;
+    const TEST_DOB_INPUT = `${ rndNumber(10, 25) }-${ TEST_MONTHS[ rndNumber(0, TEST_MONTHS.length) ] }-${ rndNumber(1950, 2020) }`;
     const TEST_PERNAMENT_ADDRESS_INPUT = randomString(15);
-    // const TEST_START_DATE_INPUT = `${ rndNumber(1920, 2020) }-${ rndNumber(1, 12) }-${ rndNumber(1, 28) }`;
+    const TEST_START_DATE_INPUT = `${ rndNumber(10, 25) }-${ TEST_MONTHS[ rndNumber(0, TEST_MONTHS.length) ] }-${ rndNumber(1950, 2020) }`;
     const TEST_CURRENT_ADDRESS_INPUT = randomString(15);
     const TEST_ICO_INPUT = randomNumberString(8);
     const TEST_COMPENSATION_INPUT = rndNumber(0, 100000).toString();
@@ -136,7 +136,6 @@ describe(("HR module tests"), () => {
 
         // search for user
         cy.contains("button", "Search").click();
-        cy.wait(2500);
 
         // generate and type random user information as inputs
         // all save as aliases for future checks in other submodules
@@ -151,9 +150,12 @@ describe(("HR module tests"), () => {
 
                 // dob
                 cy.get("input").eq(1).should("exist");
-                // cy.get("input").eq(1).invoke('attr', 'value', TEST_DOB_INPUT);
-                // cy.get("input").eq(1).type("{ selectall }{ backspace }")
-                // cy.get("input").eq(1).type(TEST_DOB_INPUT);
+                cy.get("input")
+                    .eq(1)
+                    .invoke('attr', 'readonly', false)
+                    .click()
+                    .type(`{selectall}{del}${ TEST_DOB_INPUT }{enter}`);
+                cy.get("input").eq(1).should("have.value", TEST_DOB_INPUT);
 
                 // pernament address
                 cy.get("input").eq(2).should("exist");
@@ -166,7 +168,12 @@ describe(("HR module tests"), () => {
 
                 // start date
                 cy.get("input").eq(4).should("exist");
-                // cy.get("input").eq(4).type(TEST_START_DATE_INPUT);
+                cy.get("input")
+                    .eq(4)
+                    .invoke('attr', 'readonly', false)
+                    .click()
+                    .type(`{selectall}{del}${ TEST_START_DATE_INPUT }{enter}`);
+                cy.get("input").eq(4).should("have.value", TEST_START_DATE_INPUT);
 
                 // current adress
                 cy.get("input").eq(5).should("exist");
@@ -233,9 +240,7 @@ describe(("HR module tests"), () => {
             .should('have.text', 'User Info')
             .click();
 
-        cy.wait(2500);
-        cy.get("#userInfoForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
-
+        cy.get("#userInfoForm").within(() => {
             // username
             cy.get("input", { "timeout": TTW_TO_LOAD_ELEMENT }).eq(0).should("have.value", TEST_USERNAME);
 
@@ -245,7 +250,7 @@ describe(("HR module tests"), () => {
 
             // dob
             cy.get("input").eq(2).should("exist");
-
+            cy.get("input").eq(2).should("have.value", TEST_DOB_INPUT);
 
             // pernament address
             cy.get("input").eq(5).should("exist");
@@ -253,7 +258,7 @@ describe(("HR module tests"), () => {
 
             // start date
             cy.get("input").eq(3).should("exist");
-            // cy.get("input").eq(4).type(TEST_START_DATE_INPUT);
+            cy.get("input").eq(3).should("have.value", TEST_START_DATE_INPUT);
 
             // current adress
             cy.get("input").eq(4).should("exist");
@@ -269,9 +274,7 @@ describe(("HR module tests"), () => {
             .should('have.text', 'Finances')
             .click();
 
-        cy.wait(2500);
-        cy.get("#userFinancialForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
-
+        cy.get("#userFinancialForm").within(() => {
             // ico
             cy.get("input").eq(0).should("exist");
             cy.get("input").eq(0).should("have.value", TEST_ICO_INPUT);
@@ -297,8 +300,6 @@ describe(("HR module tests"), () => {
             .should('have.text', 'Annual Leave')
             .click();
 
-        cy.wait(2500);
-
         cy.get("#userAnnualLeaveForm",).within(() => {
             // used days
             cy.get("input").eq(0).should("exist");
@@ -314,8 +315,7 @@ describe(("HR module tests"), () => {
             .should('have.text', 'User Info')
             .click();
 
-        cy.get("#userInfoForm", { "timeout": TTW_TO_LOAD_ELEMENT }).within(() => {
-            cy.wait(2500);
+        cy.get("#userInfoForm").within(() => {
             // username
             cy.get("input").eq(0).should("have.value", TEST_USERNAME);
 
