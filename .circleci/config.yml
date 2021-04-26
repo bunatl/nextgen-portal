@@ -8,22 +8,15 @@ jobs:
           TERM: xterm
     working_directory: ~/portalo
     steps:
-      - restore_cache:
-          keys:
-            # when lock file changes, use increasingly general patterns to restore cache
-            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-packages-v1-{{ .Branch }}-
-            - yarn-packages-v1-
-
       - checkout
       - run:
           name: Install project dependencies
           command: yarn install --frozen-lockfile
 
       - save_cache:
+          key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
           paths:
             - ~/portalo/.cache/yarn
-          key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
           
   build_run:
     docker:
@@ -33,12 +26,14 @@ jobs:
           TERM: xterm
     working_directory: ~/portalo
     steps:
+      # to provide yarn.lock file
+      - checkout
       - restore_cache:
           keys:
             # when lock file changes, use increasingly general patterns to restore cache
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-packages-v1-{{ .Branch }}-
-            - yarn-packages-v1-
+            # - yarn-packages-v1-{{ .Branch }}-
+            # - yarn-packages-v1-
       - run: 
           name: Compile and start development server on port 3000
           command: yarn startOnPort3000Linux
@@ -55,6 +50,14 @@ jobs:
           TERM: xterm
     working_directory: ~/portalo
     steps:
+      # to provide yarn.lock file
+      - checkout
+      - restore_cache:
+          keys:
+            # when lock file changes, use increasingly general patterns to restore cache
+            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            # - yarn-packages-v1-{{ .Branch }}-
+            # - yarn-packages-v1-
       - run: 
           name: Run routing tests with react-testing-library via yarn test
           command: 'yarn test ~/portalo/src/tests/react-testing-library/routing.test.tsx'
@@ -64,7 +67,7 @@ jobs:
 
 workflows:
   version: 2.1
-  build_and_test:
+  install_build_test:
     jobs:
       - install
       - build_run:
