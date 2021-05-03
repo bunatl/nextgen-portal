@@ -32,7 +32,6 @@ The application has a separate database (Cognito user pool) for login and the se
 ## Technology stack
 * [JavaScript](https://www.javascript.com/) - JavaScript is the world's most popular and easy to learn programming language of the Web
 * [TypeScript](https://www.typescriptlang.org/) - Typed superset of JavaScript
-* [CircleCI](https://circleci.com/about/) - Our CI/CD platform lets teams build and deliver great software, quickly and at scale, in the cloud, or on your own infrastructure.
 * [create-react-app](https://github.com/facebook/create-react-app) - Set up a modern web app by running one command.
 
 #### Frontend
@@ -45,11 +44,12 @@ The application has a separate database (Cognito user pool) for login and the se
 * [Apollo Client](https://www.apollographql.com/docs/react/) - Comprehensive state management library for JavaScript that enables you to manage both local and remote data with GraphQL
 
 #### Backend
-* [AWS lambda](https://aws.amazon.com/lambda/) - Serveless compute service as opposed to [Node.js](https://nodejs.org) (server side JavaScript) with [Express.js](https://expressjs.com/)
+* [AWS Lambda](https://aws.amazon.com/lambda/) - Serveless compute service as opposed to [Node.js](https://nodejs.org) (server side JavaScript) with [Express.js](https://expressjs.com/)
 * [AWS API Gateway](https://aws.amazon.com/api-gateway/) - Create, maintain, and secure APIs at any scale
 * [AWS Dynamo DB](https://aws.amazon.com/dynamodb/) - Fast and flexible NoSQL key-value and document database that delivers single-digit millisecond performance at any scale
 * [AWS IAM](https://aws.amazon.com/iam/) - Securely manage access to AWS services and resources
 * [AWS Amplify](https://aws.amazon.com/amplify/) - Fastest, easiest way to build mobile and web apps that scale
+* [AWS Cognito](https://aws.amazon.com/cognito/) - Simple and Secure User Sign-Up, Sign-In, and Access Control
 * [GraphQL](https://graphql.org/) - A query language for your API
 * [apollo-server-lambda](https://www.apollographql.com/docs/apollo-server/v1/servers/lambda/) - Apollo Server for AWS Lambda
 * [serverless framework](https://www.serverless.com/) - Easy YAML + CLI development and deployment to AWS, Azure, Google Cloud, Knative & more
@@ -60,6 +60,9 @@ The application has a separate database (Cognito user pool) for login and the se
     * [Chai.js](https://www.chaijs.com/) - Chai is a BDD / TDD assertion library for node and the browser that can be delightfully paired with any javascript testing framework.
 * [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - React Testing Library builds on top of DOM Testing Library by adding APIs for working with React components.
     * [Jest.js](https://jestjs.io/) - Jest is a delightful JavaScript Testing Framework with a focus on simplicity.
+
+#### Continuous integration
+* [CircleCI](https://circleci.com/about/) - Our CI/CD platform lets teams build and deliver great software, quickly and at scale, in the cloud, or on your own infrastructure.
 
 ## Installation
 #### Frontend
